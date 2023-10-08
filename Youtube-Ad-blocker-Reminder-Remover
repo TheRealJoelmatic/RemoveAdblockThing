@@ -1,0 +1,45 @@
+// ==UserScript==
+// @name         Remove Adblock Thing
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Removes Adblock Thing
+// @author       JoelMatic
+// @match        https://www.youtube.com/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  const debug = true; // Set to false to disable debug messages
+
+  if (debug) console.log("Script started");
+
+  setInterval(() => {
+    const popup = document.querySelector("body > ytd-app > ytd-popup-container");
+    if (popup) {
+      if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
+      popup.remove();
+
+      // Check if the video is paused
+      const video = document.querySelector("#movie_player > video.html5-main-video");
+      if (video && video.paused) {
+        // Simulate pressing the "k" key to unpause the video
+        const keyEvent = new KeyboardEvent("keydown", {
+          key: "k",
+          code: "KeyK",
+          keyCode: 75,
+          which: 75,
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+        document.dispatchEvent(keyEvent);
+        if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
+      }
+
+      if (debug) console.log("Remove Adblock Thing: Popup removed");
+    }
+  }, 1000);
+})();
+
+
