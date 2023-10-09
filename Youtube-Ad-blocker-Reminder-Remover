@@ -37,7 +37,6 @@
             if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
             popup.remove();
-            removeAddSettings();
 
             // Check if the video is paused
             const video = document.querySelector("#movie_player > video.html5-main-video");
