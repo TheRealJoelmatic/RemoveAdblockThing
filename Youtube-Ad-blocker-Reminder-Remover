@@ -10,19 +10,38 @@
 // ==/UserScript==
 
 (function () {
-  const debug = true; // Set to false to disable debug messages
+    // Specify domains and JSON paths to remove
+    const domainsToRemove = [
+        '*.youtube-nocookie.com/*'
+    ];
+    const jsonPathsToRemove = [
+        'playerResponse.adPlacements',
+        'playerResponse.playerAds',
+        'adPlacements',
+        'playerAds',
+        'playerConfig',
+        'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
+    ];
 
-  if (debug) console.log("Script started");
+    const debug = true; // Set to false to disable debug messages
 
-  setInterval(() => {
+    if (debug) console.log("Script started");
+
+    // Old variable but could work in some cases
+    window.__ytplayer_adblockDetected = false;
+
+    removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+    setInterval(() => {
     const popup = document.querySelector("body > ytd-app > ytd-popup-container");
-    if (popup) {
-      if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
-      popup.remove();
+        if (popup) {
+            if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
-      // Check if the video is paused
-      const video = document.querySelector("#movie_player > video.html5-main-video");
-      if (video && video.paused) {
+            popup.remove();
+            removeAddSettings();
+
+            // Check if the video is paused
+            const video = document.querySelector("#movie_player > video.html5-main-video");
+            if (video && video.paused) {
         // Simulate pressing the "k" key to unpause the video
         const keyEvent = new KeyboardEvent("keydown", {
           key: "k",
@@ -37,9 +56,36 @@
         if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
       }
 
-      if (debug) console.log("Remove Adblock Thing: Popup removed");
-    }
-  }, 1000);
-})();
+            if (debug) console.log("Remove Adblock Thing: Popup removed");
+        }
+    }, 1000);
 
+    // Observe and remove ads when new content is loaded dynamically
+    const observer = new MutationObserver(() => {
+        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+    });
+
+    const observerConfig = { childList: true, subtree: true };
+    observer.observe(document.body, observerConfig);
+
+    function removeJsonPaths(domains, jsonPaths) {
+        const currentDomain = window.location.hostname;
+        if (domains.includes(currentDomain)) {
+            jsonPaths.forEach(jsonPath => {
+                const pathParts = jsonPath.split('.');
+                let obj = window;
+                for (const part of pathParts) {
+                    if (obj.hasOwnProperty(part)) {
+                        obj = obj[part];
+                    } else {
+                        break;
+                    }
+                }
+                obj = undefined;
+            });
+        }
+    }
+
+
+})();
 
