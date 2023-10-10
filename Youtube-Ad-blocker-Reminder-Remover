@@ -27,7 +27,7 @@
 
     let unpausedAfterSkip = 0; //This is used to check if the video has been unpaused already
 
-    if (debug) console.log("Script started");
+    if (debug) console.log("Remove Adblock Thing: Script started");
 
     // Old variable but could work in some cases
     window.__ytplayer_adblockDetected = false;
@@ -36,6 +36,10 @@
     setInterval(() =>
     {
         const popup = document.querySelector("body > ytd-app > ytd-popup-container > tp-yt-paper-dialog");
+
+        const video1 = document.querySelector("#movie_player > video.html5-main-video");
+        const video2 = document.querySelector("#movie_player > .html5-video-container > video");
+
         if (popup)
         {
             if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
@@ -45,59 +49,19 @@
         }
 
         // Check if the video is paused after removing the popup
-        if (unpausedAfterSkip > 0)
+        if (!unpausedAfterSkip > 0) return;
+
+
+        if (video1)
         {
-            console.log("pong");
-            const video1 = document.querySelector("#movie_player > video.html5-main-video");
-            const video2 = document.querySelector("#movie_player > .html5-video-container > video");
-            if (video1)
-            {
-                if (video1.paused)
-                {
-                    // Simulate pressing the "k" key to unpause the video
-                    const keyEvent = new KeyboardEvent("keydown",
-                    {
-                        key: "k",
-                        code: "KeyK",
-                        keyCode: 75,
-                        which: 75,
-                        bubbles: true,
-                        cancelable: true,
-                        view: window
-                    });
-                    document.dispatchEvent(keyEvent);
-                    unpausedAfterSkip = 0;
-                    if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
-                }
-                else if (unpausedAfterSkip > 0)
-                {
-                    unpausedAfterSkip--;
-                }
-            }
-            if (video2)
-            {
-                if (video2.paused)
-                {
-                    // Simulate pressing the "k" key to unpause the video
-                    const keyEvent = new KeyboardEvent("keydown",
-                    {
-                        key: "k",
-                        code: "KeyK",
-                        keyCode: 75,
-                        which: 75,
-                        bubbles: true,
-                        cancelable: true,
-                        view: window
-                    });
-                    document.dispatchEvent(keyEvent);
-                    unpausedAfterSkip = 0;
-                    if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
-                }
-                else if (unpausedAfterSkip > 0)
-                {
-                    unpausedAfterSkip--;
-                }
-            }
+            // UnPause The Video
+            if (video1.paused) UnPauseVideo();
+            else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
+        }
+        if (video2)
+        {
+            if (video2.paused) UnPauseVideo();
+            else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
         }
 
     }, 1000);
@@ -114,30 +78,43 @@
     };
     observer.observe(document.body, observerConfig);
 
+    function UnPauseVideo()
+    {
+        // Simulate pressing the "k" key to unpause the video
+        const keyEvent = new KeyboardEvent("keydown",{
+            key: "k",
+            code: "KeyK",
+            keyCode: 75,
+            which: 75,
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        document.dispatchEvent(keyEvent);
+        unpausedAfterSkip = 0;
+        if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
+    }
     function removeJsonPaths(domains, jsonPaths)
     {
         const currentDomain = window.location.hostname;
-        if (domains.includes(currentDomain))
-        {
-            jsonPaths.forEach(jsonPath =>
-            {
-                const pathParts = jsonPath.split('.');
-                let obj = window;
-                for (const part of pathParts)
-                {
-                    if (obj.hasOwnProperty(part))
-                    {
-                        obj = obj[part];
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                obj = undefined;
-            });
-        }
-    }
+        if (!domains.includes(currentDomain)) return;
 
+        jsonPaths.forEach(jsonPath =>{
+            const pathParts = jsonPath.split('.');
+            let obj = window;
+            for (const part of pathParts)
+            {
+                if (obj.hasOwnProperty(part))
+                {
+                    obj = obj[part];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            obj = undefined;
+        });
+    }
 
 })();
