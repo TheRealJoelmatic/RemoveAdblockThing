@@ -19,16 +19,13 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
 3. **Create a New Script**:
    In the Tampermonkey Dashboard, click on the "Utilities" tab and select "Create a new script."
 
-4. **Copy the Script**:
-   [Copy the entire content of the userscript from this repository](https://github.com/TheRealJoelmatic/RemoveAdblockThing/blob/main/Youtube-Ad-blocker-Reminder-Remover).
+4. **Install the Script**:
+   [Click Here and Press Install](https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js).
 
-5. **Paste the Script**:
-   Paste the copied userscript code into the Tampermonkey script editor.
-
-6. **Save the Script**:
+5. **Save the Script**:
    Make sure to save your script by clicking the floppy disk icon or using the shortcut `Ctrl + S` (or `Cmd + S` on Mac).
 
-7. **Enable the Script**:
+6. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
 
 ## Usage
