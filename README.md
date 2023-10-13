@@ -41,6 +41,7 @@ If you have any suggestions, bug reports, or want to contribute to this userscri
 
 Contributors
 - [AngelPuzzle](https://github.com/angelapuzzle)
+- [oSumAtrIX](https://github.com/oSumAtrIX)
 
 ## License
 
