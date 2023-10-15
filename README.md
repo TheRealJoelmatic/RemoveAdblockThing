@@ -32,7 +32,7 @@ We also have an undetected way of skipping ads if you get blocked from the video
    Install the script using the instructions above
 
 2. **Disable your adblocker**:
-   whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry our script removes them.
+   whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry our script removes ads.
    (This only removes video player ads)
 
 ## Usage
