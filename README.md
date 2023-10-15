@@ -3,6 +3,7 @@
 ## Introduction
 
 This repository contains a userscript designed to remove the annoying "Ad blocker are not allowed on Youtube" popup. Follow the instructions below to get started.
+We also have an undetected way of skipping ads if you get blocked from the video player.
 
 ## Installation
 
@@ -24,6 +25,15 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
 
 5. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
+
+## How to bypass the video player ban from using an ad blocker
+
+1. **Install the script**:
+   Install the script using the instructions above
+
+2. **Disable your adblocker**:
+   whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry our script removes them.
+   (This only removes video player ads)
 
 ## Usage
 
