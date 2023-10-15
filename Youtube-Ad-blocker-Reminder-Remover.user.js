@@ -10,6 +10,23 @@
 // ==/UserScript==
 (function()
 {
+    //
+    //      Config
+    //
+
+    // Enable The Undetected Adblocker
+    const adblocker = true;
+
+    // Enable The Popup remover
+    const removePopup = true;
+
+    // Enable debug messages into the console
+    const debug = true;
+
+    //
+    //      CODE
+    //
+
     // Specify domains and JSON paths to remove
     const domainsToRemove = [
         '*.youtube-nocookie.com/*'
@@ -23,62 +40,81 @@
         'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
     ];
 
-    const debug = true; // Set to false to disable debug messages
-
-    let unpausedAfterSkip = 0; //This is used to check if the video has been unpaused already
-
-    if (debug) console.log("Remove Adblock Thing: Script started");
-
-    // Old variable but could work in some cases
-    window.__ytplayer_adblockDetected = false;
-
-    removeJsonPaths(domainsToRemove, jsonPathsToRemove);
-    setInterval(() =>
-    {
-        const popup = document.querySelector("body > ytd-app > ytd-popup-container > tp-yt-paper-dialog");
-
-        const video1 = document.querySelector("#movie_player > video.html5-main-video");
-        const video2 = document.querySelector("#movie_player > .html5-video-container > video");
-
-        if (popup)
-        {
-            if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
-            popup.remove();
-            unpausedAfterSkip = 2;
-            if (debug) console.log("Remove Adblock Thing: Popup removed");
-        }
-
-        // Check if the video is paused after removing the popup
-        if (!unpausedAfterSkip > 0) return;
-
-
-        if (video1)
-        {
-            // UnPause The Video
-            if (video1.paused) UnPauseVideo();
-            else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
-        }
-        if (video2)
-        {
-            if (video2.paused) UnPauseVideo();
-            else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
-        }
-
-    }, 1000);
-
-    // Observe and remove ads when new content is loaded dynamically
-    const observer = new MutationObserver(() =>
-    {
-        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
-    });
-
+    // Observe config
     const observerConfig = {
         childList: true,
         subtree: true
     };
-    observer.observe(document.body, observerConfig);
 
-    function UnPauseVideo()
+    //This is used to check if the video has been unpaused already
+    let unpausedAfterSkip = 0;
+
+    if (debug) console.log("Remove Adblock Thing: Remove Adblock Thing: Script started");
+    // Old variable but could work in some cases
+    window.__ytplayer_adblockDetected = false;
+
+    if(adblocker) addblocker();
+    if(removePopup) popupRemover();
+    if(removePopup) observer.observe(document.body, observerConfig);
+
+    // Remove Them pesski popups
+    function popupRemover() {
+        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+        setInterval(() => {
+
+            const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
+
+            const video1 = document.querySelector("#movie_player > video.html5-main-video");
+            const video2 = document.querySelector("#movie_player > .html5-video-container > video");
+
+            if (popup) {
+                if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
+                popup.remove();
+                unpausedAfterSkip = 2;
+                if (debug) console.log("Remove Adblock Thing: Popup removed");
+            }
+
+            // Check if the video is paused after removing the popup
+            if (!unpausedAfterSkip > 0) return;
+
+
+            if (video1) {
+                // UnPause The Video
+                if (video1.paused) unPauseVideo();
+                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
+            }
+            if (video2) {
+                if (video2.paused) unPauseVideo();
+                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
+            }
+
+        }, 1000);
+    }
+    // undetected adblocker method
+    function addblocker()
+    {
+        setInterval(() =>
+        {
+            const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
+            const ad = [...document.querySelectorAll('.ad-showing')][0];
+            const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
+            if (ad)
+            {
+                document.querySelector('video').playbackRate = 10;
+                if(skipBtn)
+                {
+                    skipBtn.click();
+                }
+            }
+
+            if (sidAd)
+            {
+                sidAd.remove();
+            }
+        }, 50)
+    }
+    // Unpause the video Works most of the time
+    function unPauseVideo()
     {
         // Simulate pressing the "k" key to unpause the video
         const keyEvent = new KeyboardEvent("keydown",{
@@ -116,5 +152,9 @@
             obj = undefined;
         });
     }
-
+    // Observe and remove ads when new content is loaded dynamically
+    const observer = new MutationObserver(() =>
+    {
+        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+    });
 })();
