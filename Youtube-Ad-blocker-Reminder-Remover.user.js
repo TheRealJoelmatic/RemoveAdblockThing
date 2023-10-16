@@ -152,9 +152,13 @@
             obj = undefined;
         });
     }
-    // Observe and remove ads when new content is loaded dynamically
-    const observer = new MutationObserver(() =>
-    {
-        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+   // Observe and remove ads when new content is loaded dynamically
+    const observer = new MutationObserver(() => {
+        try {
+            removeJsonPaths(domainsToRemove, jsonPathsToRemove);
+            popupRemover();
+        } catch (error) {
+            console.error(error);
+        }
     });
 })();
