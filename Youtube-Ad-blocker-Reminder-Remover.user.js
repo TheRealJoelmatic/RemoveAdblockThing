@@ -70,6 +70,9 @@
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
 
             if (popup) {
+                document.getElementById("dismiss-button").click();
+                document.getElementsByClassName("ytp-play-button ytp-button")[0].click();
+                
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
                 popup.remove();
                 if (modalOverlay) modalOverlay.removeAttribute("opened");
