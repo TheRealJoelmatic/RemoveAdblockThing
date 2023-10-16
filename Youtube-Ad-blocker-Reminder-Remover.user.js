@@ -67,9 +67,12 @@
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
             const video2 = document.querySelector("#movie_player > .html5-video-container > video");
 
+            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
+
             if (popup) {
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
                 popup.remove();
+                if (modalOverlay) modalOverlay.removeAttribute("opened");
                 unpausedAfterSkip = 2;
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
