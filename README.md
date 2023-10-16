@@ -46,7 +46,7 @@ If you have any suggestions, bug reports, or want to contribute to this userscri
 Contributors
 - [AngelPuzzle](https://github.com/angelapuzzle)
 - [oSumAtrIX](https://github.com/oSumAtrIX)
-
+- [Albedo-13](https://github.com/Albedo-13)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
