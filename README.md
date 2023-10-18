@@ -57,6 +57,7 @@ Contributors
 - [oSumAtrIX](https://github.com/oSumAtrIX)
 - [Albedo-13](https://github.com/Albedo-13)
 - [SleepingPig35](https://github.com/SleepingPig35)
+- [marjansimic](https://github.com/marjansimic)
 
 ## License
 
