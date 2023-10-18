@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -10,8 +10,7 @@
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
 // ==/UserScript==
-(function()
-{
+(function() {
     //
     //      Config
     //
@@ -29,64 +28,37 @@
     //      CODE
     //
 
-    // Specify domains and JSON paths to remove
-    const domainsToRemove = [
-        '*.youtube-nocookie.com/*'
-    ];
-    const jsonPathsToRemove = [
-        'playerResponse.adPlacements',
-        'playerResponse.playerAds',
-        'adPlacements',
-        'playerAds',
-        'playerConfig',
-        'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
-    ];
-
     // Observe config
     const observerConfig = {
         childList: true,
-        subtree: true
+        subtree: true,
     };
 
-    //This is used to check if the video has been unpaused already
+    // This is used to check if the video has been unpaused already
     let unpausedAfterSkip = 0;
 
-    if (debug) console.log("Remove Adblock Thing: Remove Adblock Thing: Script started");
-    // Old variable but could work in some cases
-    window.__ytplayer_adblockDetected = false;
+    if (debug) console.log("Remove Adblock Thing: Script started");
 
-    if(adblocker) addblocker();
-    if(removePopup) popupRemover();
-    if(removePopup) observer.observe(document.body, observerConfig);
+    if (adblocker) addblocker();
+    if (removePopup) popupRemover();
+    if (removePopup) observer.observe(document.body, observerConfig);
 
     // Remove Them pesski popups
     function popupRemover() {
-        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
         setInterval(() => {
-
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
-            const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
-            const popupButton = document.getElementById("dismiss-button");
-            const popupButton2 = document.getElementById("ytp-play-button ytp-button");
+            const popup = document.querySelector("ytd-popup-container.style-scope");
+            const popupButton = document.querySelector("tp-yt-paper-button.style-scope");
+            const video = document.querySelector("#movie_player > video.html5-main-video");
 
-            const video1 = document.querySelector("#movie_player > video.html5-main-video");
-            const video2 = document.querySelector("#movie_player > .html5-video-container > video");
-
-            const bodyStyle = document.body.style;
-
-            bodyStyle.setProperty('overflow', 'scroll', 'important');
-
-            if (modalOverlay){
-                modalOverlay.removeAttribute("opened");
+            if (modalOverlay) {
                 modalOverlay.remove();
             }
 
             if (popup) {
-
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
-                if(popupButton) popupButton.click();
-                if(popupButton2) popupButton2.click();
+                if (popupButton) popupButton.click();
                 popup.remove();
                 unpausedAfterSkip = 2;
 
@@ -94,86 +66,85 @@
             }
 
             // Check if the video is paused after removing the popup
-            if (!unpausedAfterSkip > 0) return;
-
-
-            if (video1) {
-                // UnPause The Video
-                if (video1.paused) unPauseVideo();
-                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
+            if (unpausedAfterSkip > 0) {
+                if (video && video.paused) {
+                    unPauseVideo();
+                }
+                unpausedAfterSkip--;
             }
-            if (video2) {
-                if (video2.paused) unPauseVideo();
-                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
-            }
-
         }, 1000);
     }
-    // undetected adblocker method
-    function addblocker()
-    {
-        setInterval(() =>
-        {
+
+    // Undetected adblocker method
+    function addblocker() {
+        setInterval(() => {
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
-            const ad = [...document.querySelectorAll('.ad-showing')][0];
+            const ad = document.querySelector('.ad-showing');
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
-            if (ad)
-            {
+
+            if (ad) {
                 document.querySelector('video').playbackRate = 10;
                 document.querySelector('video').volume = 0;
-                if(skipBtn)
-                {
+                if (skipBtn) {
                     skipBtn.click();
                 }
             }
-            if (sidAd)
-            {
+
+            if (sidAd) {
                 sidAd.remove();
             }
-        }, 50)
+        }, 50);
     }
+
     // Unpause the video Works most of the time
-    function unPauseVideo()
-    {
+    function unPauseVideo() {
         // Simulate pressing the "k" key to unpause the video
-        const keyEvent = new KeyboardEvent("keydown",{
+        const keyEvent = new KeyboardEvent("keydown", {
             key: "k",
             code: "KeyK",
             keyCode: 75,
             which: 75,
             bubbles: true,
             cancelable: true,
-            view: window
+            view: window,
         });
         document.dispatchEvent(keyEvent);
         unpausedAfterSkip = 0;
         if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
     }
-    function removeJsonPaths(domains, jsonPaths)
-    {
-        const currentDomain = window.location.hostname;
-        if (!domains.includes(currentDomain)) return;
 
-        jsonPaths.forEach(jsonPath =>{
-            const pathParts = jsonPath.split('.');
+    // Observe and remove ads when new content is loaded dynamically
+    const observer = new MutationObserver(() => {
+        removeJsonPaths();
+    });
+
+    function removeJsonPaths() {
+        // Specify domains and JSON paths to remove
+        const domainsToRemove = [
+            '*.youtube-nocookie.com/*'
+        ];
+        const jsonPathsToRemove = [
+            'playerResponse.adPlacements',
+            'playerResponse.playerAds',
+            'adPlacements',
+            'playerAds',
+            'playerConfig',
+            'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
+        ];
+
+        const currentDomain = window.location.hostname;
+        if (!domainsToRemove.includes(currentDomain)) return;
+
+        jsonPathsToRemove.forEach(jsonPath => {
             let obj = window;
-            for (const part of pathParts)
-            {
-                if (obj.hasOwnProperty(part))
-                {
+            const pathParts = jsonPath.split('.');
+            for (const part of pathParts) {
+                if (obj && obj.hasOwnProperty(part)) {
                     obj = obj[part];
-                }
-                else
-                {
+                } else {
                     break;
                 }
             }
-            obj = undefined;
         });
     }
-    // Observe and remove ads when new content is loaded dynamically
-    const observer = new MutationObserver(() =>
-    {
-        removeJsonPaths(domainsToRemove, jsonPathsToRemove);
-    });
 })();
