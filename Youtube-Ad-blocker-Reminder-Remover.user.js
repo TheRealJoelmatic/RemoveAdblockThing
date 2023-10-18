@@ -8,8 +8,9 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
 // ==/UserScript==
+
 (function()
-{
+ {
     //
     //      Config
     //
@@ -40,6 +41,12 @@
         'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
     ];
 
+    let clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+    });
+
     // Observe config
     const observerConfig = {
         childList: true,
@@ -67,15 +74,27 @@
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
             const video2 = document.querySelector("#movie_player > .html5-video-container > video");
 
+            const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
+
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
 
             if (popup) {
                 document.getElementById("dismiss-button").click();
                 document.getElementsByClassName("ytp-play-button ytp-button")[0].click();
-                
+
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
                 popup.remove();
-                if (modalOverlay) modalOverlay.removeAttribute("opened");
+
+                // remove overlay
+                modalOverlay.removeAttribute("opened");
+                modalOverlay.remove();
+
+                // toggle full-screen video to enable scrolling (NEED TO TEST)
+                fullScreenButton.dispatchEvent(clickEvent);
+                setTimeout(() => {
+                  fullScreenButton.dispatchEvent(clickEvent);
+                }, 300);
+
                 unpausedAfterSkip = 2;
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
@@ -100,7 +119,7 @@
     function addblocker()
     {
         setInterval(() =>
-        {
+                    {
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
@@ -160,7 +179,9 @@
     }
     // Observe and remove ads when new content is loaded dynamically
     const observer = new MutationObserver(() =>
-    {
+                                          {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });
 })();
+
+
