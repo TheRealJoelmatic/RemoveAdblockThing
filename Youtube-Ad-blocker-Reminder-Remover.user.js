@@ -62,21 +62,32 @@
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
         setInterval(() => {
 
+            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
+            const popupButton = document.getElementById("dismiss-button");
+            const popupButton2 = document.getElementById("ytp-play-button ytp-button");
 
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
             const video2 = document.querySelector("#movie_player > .html5-video-container > video");
 
-            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
+            const bodyStyle = document.body.style;
+
+            bodyStyle.setProperty('overflow', 'scroll', 'important');
+
+            if (modalOverlay){
+                modalOverlay.removeAttribute("opened");
+                modalOverlay.remove();
+            }
 
             if (popup) {
-                document.getElementById("dismiss-button").click();
-                document.getElementsByClassName("ytp-play-button ytp-button")[0].click();
-                
+
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
+
+                if(popupButton) popupButton.click();
+                if(popupButton2) popupButton2.click();
                 popup.remove();
-                if (modalOverlay) modalOverlay.removeAttribute("opened");
                 unpausedAfterSkip = 2;
+
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
 
@@ -107,12 +118,12 @@
             if (ad)
             {
                 document.querySelector('video').playbackRate = 10;
+                document.querySelector('video').volume = 0;
                 if(skipBtn)
                 {
                     skipBtn.click();
                 }
             }
-
             if (sidAd)
             {
                 sidAd.remove();
