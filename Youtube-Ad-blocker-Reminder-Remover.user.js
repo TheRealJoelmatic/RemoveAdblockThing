@@ -10,8 +10,9 @@
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
 // ==/UserScript==
+
 (function()
-{
+ {
     //
     //      Config
     //
@@ -48,6 +49,16 @@
         subtree: true
     };
 
+    const keyEvent = new KeyboardEvent("keydown",{
+      key: "k",
+      code: "KeyK",
+      keyCode: 75,
+      which: 75,
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
+
     //This is used to check if the video has been unpaused already
     let unpausedAfterSkip = 0;
 
@@ -64,10 +75,11 @@
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
         setInterval(() => {
 
+            const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
             const popupButton = document.getElementById("dismiss-button");
-            const popupButton2 = document.getElementById("ytp-play-button ytp-button");
+            // const popupButton2 = document.getElementById("ytp-play-button ytp-button");
 
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
             const video2 = document.querySelector("#movie_player > .html5-video-container > video");
@@ -76,19 +88,23 @@
 
             bodyStyle.setProperty('overflow-y', 'scroll', 'important');
 
-            if (modalOverlay){
+            if (modalOverlay) {
                 modalOverlay.removeAttribute("opened");
                 modalOverlay.remove();
             }
 
             if (popup) {
-
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
                 if(popupButton) popupButton.click();
-                if(popupButton2) popupButton2.click();
+                // if(popupButton2) popupButton2.click();
                 popup.remove();
                 unpausedAfterSkip = 2;
+
+                fullScreenButton.dispatchEvent(keyEvent);
+                setTimeout(() => {
+                  fullScreenButton.dispatchEvent(keyEvent);
+                }, 300);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
@@ -113,7 +129,7 @@
     function addblocker()
     {
         setInterval(() =>
-        {
+                    {
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
@@ -136,15 +152,6 @@
     function unPauseVideo()
     {
         // Simulate pressing the "k" key to unpause the video
-        const keyEvent = new KeyboardEvent("keydown",{
-            key: "k",
-            code: "KeyK",
-            keyCode: 75,
-            which: 75,
-            bubbles: true,
-            cancelable: true,
-            view: window
-        });
         document.dispatchEvent(keyEvent);
         unpausedAfterSkip = 0;
         if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
@@ -173,7 +180,9 @@
     }
     // Observe and remove ads when new content is loaded dynamically
     const observer = new MutationObserver(() =>
-    {
+                                          {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });
 })();
+
+
