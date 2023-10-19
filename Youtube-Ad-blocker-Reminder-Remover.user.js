@@ -134,6 +134,7 @@
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
             const displayAd = document.querySelector('div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint');
+            const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             if (ad)
             {
                 document.querySelector('video').playbackRate = 10;
@@ -149,6 +150,9 @@
             }
             if (displayAd) {
                 displayAd.remove();
+            }
+            if (feedAd) {
+                feedAd.remove();
             }
         }, 50)
     }
@@ -184,9 +188,7 @@
     }
     // Observe and remove ads when new content is loaded dynamically
     const observer = new MutationObserver(() =>
-                                          {
+    {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });
 })();
-
-
