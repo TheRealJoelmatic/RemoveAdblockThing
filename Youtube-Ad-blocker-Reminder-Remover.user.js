@@ -65,6 +65,7 @@
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
         setInterval(() => {
 
+            const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
             const popupButton = document.getElementById("dismiss-button");
@@ -89,6 +90,11 @@
                 if(popupButton2) popupButton2.click();
                 popup.remove();
                 unpausedAfterSkip = 2;
+
+                fullScreenButton.dispatchEvent(clickEvent);
+                setTimeout(() => {
+                  fullScreenButton.dispatchEvent(clickEvent);
+                }, 300);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
