@@ -134,6 +134,8 @@
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
             const displayAd = document.querySelector('div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint');
+            const sparklesContainer = document.querySelector('div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer');
+            const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             if (ad)
             {
@@ -150,6 +152,12 @@
             }
             if (displayAd) {
                 displayAd.remove();
+            }
+            if (sparklesContainer) {
+                sparklesContainer.remove();
+            }
+            if (mainContainer) {
+                mainContainer.remove();
             }
             if (feedAd) {
                 feedAd.remove();
