@@ -50,13 +50,13 @@
     };
 
     const keyEvent = new KeyboardEvent("keydown",{
-      key: "k",
-      code: "KeyK",
-      keyCode: 75,
-      which: 75,
-      bubbles: true,
-      cancelable: true,
-      view: window
+        key: "k",
+        code: "KeyK",
+        keyCode: 75,
+        which: 75,
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
 
     //This is used to check if the video has been unpaused already
@@ -103,7 +103,7 @@
 
                 fullScreenButton.dispatchEvent(keyEvent);
                 setTimeout(() => {
-                  fullScreenButton.dispatchEvent(keyEvent);
+                    fullScreenButton.dispatchEvent(keyEvent);
                 }, 300);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
@@ -139,8 +139,10 @@
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             if (ad)
             {
-                document.querySelector('video').playbackRate = 10;
-                document.querySelector('video').volume = 0;
+                const video = document.querySelector('video');
+                video.playbackRate = 10;
+                video.volume = 0;
+                video.currentTime = video.duration;
                 if(skipBtn)
                 {
                     skipBtn.click();
