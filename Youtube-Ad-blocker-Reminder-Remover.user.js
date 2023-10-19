@@ -6,6 +6,8 @@
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
+// @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -41,12 +43,6 @@
         'auxiliaryUi.messageRenderers.enforcementMessageViewModel'
     ];
 
-    let clickEvent = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-    });
-
     // Observe config
     const observerConfig = {
         childList: true,
@@ -69,33 +65,31 @@
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
         setInterval(() => {
 
+            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
+            const popupButton = document.getElementById("dismiss-button");
+            const popupButton2 = document.getElementById("ytp-play-button ytp-button");
 
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
             const video2 = document.querySelector("#movie_player > .html5-video-container > video");
 
-            const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
+            const bodyStyle = document.body.style;
 
-            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
+            bodyStyle.setProperty('overflow-y', 'scroll', 'important');
 
-            if (popup) {
-                document.getElementById("dismiss-button").click();
-                document.getElementsByClassName("ytp-play-button ytp-button")[0].click();
-
-                if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
-                popup.remove();
-
-                // remove overlay
+            if (modalOverlay){
                 modalOverlay.removeAttribute("opened");
                 modalOverlay.remove();
+            }
 
-                // toggle full-screen video to enable scrolling (NEED TO TEST)
-                fullScreenButton.dispatchEvent(clickEvent);
-                setTimeout(() => {
-                  fullScreenButton.dispatchEvent(clickEvent);
-                }, 300);
+            if (popup) {
+                if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
+                if(popupButton) popupButton.click();
+                if(popupButton2) popupButton2.click();
+                popup.remove();
                 unpausedAfterSkip = 2;
+
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
 
@@ -126,12 +120,12 @@
             if (ad)
             {
                 document.querySelector('video').playbackRate = 10;
+                document.querySelector('video').volume = 0;
                 if(skipBtn)
                 {
                     skipBtn.click();
                 }
             }
-
             if (sidAd)
             {
                 sidAd.remove();
