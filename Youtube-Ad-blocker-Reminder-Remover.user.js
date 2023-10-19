@@ -133,6 +133,7 @@
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
+            const displayAd = document.querySelector('div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint');
             if (ad)
             {
                 document.querySelector('video').playbackRate = 10;
@@ -145,6 +146,9 @@
             if (sidAd)
             {
                 sidAd.remove();
+            }
+            if (displayAd) {
+                displayAd.remove();
             }
         }, 50)
     }
