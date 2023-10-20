@@ -108,6 +108,7 @@
                 unpausedAfterSkip = 2;
 
                 fullScreenButton.dispatchEvent(mouseEvent);
+              
                 setTimeout(() => {
                   fullScreenButton.dispatchEvent(mouseEvent);
                 }, 500);
@@ -145,8 +146,10 @@
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             if (ad)
             {
-                document.querySelector('video').playbackRate = 10;
-                document.querySelector('video').volume = 0;
+                const video = document.querySelector('video');
+                video.playbackRate = 10;
+                video.volume = 0;
+                video.currentTime = video.duration;
                 if(skipBtn)
                 {
                     skipBtn.click();
