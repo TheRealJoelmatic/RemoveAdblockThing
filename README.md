@@ -60,6 +60,7 @@ Contributors
 - [SleepingPig35](https://github.com/SleepingPig35)
 - [marjansimic](https://github.com/marjansimic)
 - [Pecunia201](https://github.com/Pecunia201)
+- [henryli17](https://github.com/henryli17)
 
 ## License
 
