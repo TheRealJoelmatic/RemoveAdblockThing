@@ -49,7 +49,7 @@
         subtree: true
     };
 
-    const keyEvent = new KeyboardEvent("keydown",{
+    const keyEvent = new KeyboardEvent("keydown", {
       key: "k",
       code: "KeyK",
       keyCode: 75,
@@ -57,6 +57,12 @@
       bubbles: true,
       cancelable: true,
       view: window
+    });
+
+    let mouseEvent = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
     });
 
     //This is used to check if the video has been unpaused already
@@ -101,10 +107,10 @@
                 popup.remove();
                 unpausedAfterSkip = 2;
 
-                fullScreenButton.dispatchEvent(keyEvent);
+                fullScreenButton.dispatchEvent(mouseEvent);
                 setTimeout(() => {
-                  fullScreenButton.dispatchEvent(keyEvent);
-                }, 300);
+                  fullScreenButton.dispatchEvent(mouseEvent);
+                }, 500);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
