@@ -79,7 +79,8 @@
     // Remove Them pesski popups
     function popupRemover() {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
-        setInterval(() => {
+        const removePopupLoop = () => {
+            requestIdleCallback(removePopupLoop, {timeout: 500});
 
             const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
@@ -129,14 +130,15 @@
                 if (video2.paused) unPauseVideo();
                 else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
             }
-
-        }, 1000);
+        }
+        requestIdleCallback(removePopupLoop);
     }
     // undetected adblocker method
     function addblocker()
     {
-        setInterval(() =>
-                    {
+        const adblockerFunc = () => {
+            requestIdleCallback(adblockerFunc, {timeout: 50});
+
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
@@ -161,7 +163,8 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
-        }, 50)
+        }
+        requestIdleCallback(adblockerFunc);
     }
     // Unpause the video Works most of the time
     function unPauseVideo()
