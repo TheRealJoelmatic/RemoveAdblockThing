@@ -145,6 +145,7 @@
             const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
+            const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
 
             if (ad)
             {
@@ -161,6 +162,7 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
+            sponsor?.forEach(element => element.remove());
         }, 50)
     }
     // Unpause the video Works most of the time
