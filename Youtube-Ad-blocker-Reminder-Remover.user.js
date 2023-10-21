@@ -68,7 +68,7 @@
     //This is used to check if the video has been unpaused already
     let unpausedAfterSkip = 0;
 
-    if (debug) console.log("Remove Adblock Thing: Remove Adblock Thing: Script started");
+    if (debug) console.log("Remove Adblock Thing: Script started");
     // Old variable but could work in some cases
     window.__ytplayer_adblockDetected = false;
 
@@ -155,12 +155,15 @@
                 skipBtn?.click();
             }
 
-            sidAd?.remove();
-            displayAd?.remove();
-            sparklesContainer?.remove();
-            mainContainer?.remove();
-            feedAd?.remove();
-            mastheadAd?.remove();
+                [
+                  sidAd,
+                  displayAd,
+                  sparklesContainer,
+                  mainContainer,
+                  feedAd,
+                  mastheadAd,
+                ].forEach((element) => element?.remove());
+
         }, 50)
     }
     // Unpause the video Works most of the time
