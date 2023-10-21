@@ -144,33 +144,23 @@
             const sparklesContainer = document.querySelector('div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer');
             const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
+            const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
+
             if (ad)
             {
                 const video = document.querySelector('video');
                 video.playbackRate = 10;
                 video.volume = 0;
                 video.currentTime = video.duration;
-                if(skipBtn)
-                {
-                    skipBtn.click();
-                }
+                skipBtn?.click();
             }
-            if (sidAd)
-            {
-                sidAd.remove();
-            }
-            if (displayAd) {
-                displayAd.remove();
-            }
-            if (sparklesContainer) {
-                sparklesContainer.remove();
-            }
-            if (mainContainer) {
-                mainContainer.remove();
-            }
-            if (feedAd) {
-                feedAd.remove();
-            }
+
+            sidAd?.remove();
+            displayAd?.remove();
+            sparklesContainer?.remove();
+            mainContainer?.remove();
+            feedAd?.remove();
+            mastheadAd?.remove();
         }, 50)
     }
     // Unpause the video Works most of the time
