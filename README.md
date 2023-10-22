@@ -35,6 +35,9 @@ We also have an undetected way of skipping ads if you get blocked from the video
 5. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
 
+6. **Disable your adblocker**:
+   **whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads**. Don't worry our script removes ads on youtube.
+
 ## How to use the undetected AdBlock
 
 Note this also allows you to watch videos when your video player banned from using adblock.
