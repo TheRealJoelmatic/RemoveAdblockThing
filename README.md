@@ -35,13 +35,16 @@ We also have an undetected way of skipping ads if you get blocked from the video
 5. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
 
-## How to bypass the video player ban from using an ad blocker
+## How to use the undetected AdBlock
+
+Note this also allows you to watch videos when your video player banned from using adblock.
 
 1. **Install the script**:
    Install the script using the instructions above
 
 2. **Disable your adblocker**:
-   **whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads**. Don't worry our script removes ads.
+   **whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads**. Don't worry our script removes ads
+
 
 ## Usage
 
@@ -59,7 +62,8 @@ Contributors
 - [marjansimic](https://github.com/marjansimic)
 - [Pecunia201](https://github.com/Pecunia201)
 - [henryli17](https://github.com/henryli17)
-
+- [ClientNode](https://github.com/ClientNode)
+- [androgouws911](https://github.com/androgouws911)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
