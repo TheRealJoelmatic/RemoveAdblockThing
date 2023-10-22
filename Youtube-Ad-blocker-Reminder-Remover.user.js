@@ -92,7 +92,7 @@
 
             const bodyStyle = document.body.style;
 
-            bodyStyle.setProperty('overflow-y', 'scroll', 'important');
+            bodyStyle.setProperty('overflow-y', 'auto', 'important');
 
             if (modalOverlay) {
                 modalOverlay.removeAttribute("opened");
