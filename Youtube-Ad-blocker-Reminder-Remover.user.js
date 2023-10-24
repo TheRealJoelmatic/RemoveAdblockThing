@@ -9,6 +9,7 @@
 // @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
+// @require      https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 // ==/UserScript==
 
 (function()
