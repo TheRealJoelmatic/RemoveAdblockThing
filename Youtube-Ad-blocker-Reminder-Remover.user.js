@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.8
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -93,7 +93,7 @@
 
             const bodyStyle = document.body.style;
 
-            bodyStyle.setProperty('overflow-y', 'scroll', 'important');
+            bodyStyle.setProperty('overflow-y', 'auto', 'important');
 
             if (modalOverlay) {
                 modalOverlay.removeAttribute("opened");
@@ -147,6 +147,7 @@
             const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
+            const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
 
             if (ad)
             {
@@ -163,6 +164,7 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
+            sponsor?.forEach(element => element.remove());
         }
         requestIdleCallback(adblockerFunc);
     }
