@@ -119,16 +119,9 @@
             // Check if the video is paused after removing the popup
             if (!unpausedAfterSkip > 0) return;
 
-
-            if (video1) {
-                // UnPause The Video
-                if (video1.paused) unPauseVideo();
-                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
-            }
-            if (video2) {
-                if (video2.paused) unPauseVideo();
-                else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
-            }
+            // UnPause The Video
+            unPauseVideo(video1);
+            unPauseVideo(video2);
 
         }, 1000);
     }
@@ -166,12 +159,15 @@
         }, 50)
     }
     // Unpause the video Works most of the time
-    function unPauseVideo()
+    function unPauseVideo(video)
     {
-        // Simulate pressing the "k" key to unpause the video
-        document.dispatchEvent(keyEvent);
-        unpausedAfterSkip = 0;
-        if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
+        if (!video) return;
+        if (video.paused) {
+            // Simulate pressing the "k" key to unpause the video
+            document.dispatchEvent(keyEvent);
+            unpausedAfterSkip = 0;
+            if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
+        } else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
     }
     function removeJsonPaths(domains, jsonPaths)
     {
