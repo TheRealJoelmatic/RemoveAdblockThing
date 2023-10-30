@@ -67,6 +67,7 @@ Contributors
 - [henryli17](https://github.com/henryli17)
 - [ClientNode](https://github.com/ClientNode)
 - [androgouws911](https://github.com/androgouws911)
+- [GrooveHacker](https://github.com/GrooveHacker)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
