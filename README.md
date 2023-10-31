@@ -68,6 +68,8 @@ Contributors
 - [ClientNode](https://github.com/ClientNode)
 - [androgouws911](https://github.com/androgouws911)
 - [GrooveHacker](https://github.com/GrooveHacker)
+- [jordhanemmanuel](https://github.com/jordhanemmanuel)
+- [mabramishvili](https://github.com/mabramishvili)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
