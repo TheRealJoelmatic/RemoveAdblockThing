@@ -176,21 +176,26 @@
         const currentDomain = window.location.hostname;
         if (!domains.includes(currentDomain)) return;
 
-        jsonPaths.forEach(jsonPath =>{
+        jsonPaths.forEach(jsonPath => {
             const pathParts = jsonPath.split('.');
             let obj = window;
-            for (const part of pathParts)
-            {
-                if (obj.hasOwnProperty(part))
-                {
+            let previousObj = null;
+            let partToSetUndefined = null;
+        
+            for (const part of pathParts) {
+                if (obj.hasOwnProperty(part)) {
+                    previousObj = obj; // Keep track of the parent object.
+                    partToSetUndefined = part; // Update the part that we may set to undefined.
                     obj = obj[part];
-                }
-                else
-                {
-                    break;
+                } else {
+                    break; // Stop when we reach a non-existing part.
                 }
             }
-            obj = undefined;
+        
+            // If we've identified a valid part to set to undefined, do so.
+            if (previousObj && partToSetUndefined !== null) {
+                previousObj[partToSetUndefined] = undefined;
+            }
         });
     }
     // Observe and remove ads when new content is loaded dynamically
