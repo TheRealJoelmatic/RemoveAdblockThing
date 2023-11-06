@@ -19,7 +19,7 @@ We also have an undetected way of skipping ads if you get blocked from the video
 1. **Install Tampermonkey**:
    If you haven't already, you need to install the Tampermonkey browser extension. You can find it for various browsers:
    - [Tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-   - [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) | [This plugin is available on](https://addons.mozilla.org/firefox/addon/adskip-youtube/)
+   - [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) | This plugin is available on [https://addons.mozilla.org/firefox/addon/adskip-youtube/](https://addons.mozilla.org/firefox/addon/adskip-youtube/)
    - [Tampermonkey for Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
    - [Tampermonkey for Opera/OperaGX](https://addons.opera.com/en-gb/extensions/details/tampermonkey-beta/)
 
