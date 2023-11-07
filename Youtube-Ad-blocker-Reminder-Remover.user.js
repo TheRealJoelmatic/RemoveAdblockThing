@@ -137,6 +137,7 @@
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
             const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
             const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
+            const sidebarAd = document.querySelector('ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]');
 
             if (ad) {
                 const video = document.querySelector('video');
@@ -152,10 +153,11 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
+            sidebarAd?.remove();
             sponsor?.forEach((element) => {
                 if (element.getAttribute("id") === "panels") {
                     element.childNodes?.forEach((childElement) => {
-                        if (childElement.data.targetId && childElement.data.targetId !== "engagement-panel-macro-markers-description-chapters")
+                        if (childElement.data?.targetId && childElement.data.targetId !== "engagement-panel-macro-markers-description-chapters")
                             //Skipping the Chapters section
                             childElement.remove();
                     });
@@ -164,6 +166,14 @@
                 }
             });
             nonVid?.click();
+
+            // On the home page (d)esktop) at the top left
+            const parentElement = document.querySelector('ytd-ad-slot-renderer');
+            if (parentElement) {
+                const richItemRenderers = parentElement.closest('ytd-app').querySelector('ytd-rich-item-renderer');
+                richItemRenderers?.remove();
+            }
+
         }, 50);
 
         // Add a popup if the cookie does not exist
@@ -171,8 +181,8 @@
             if (!getGotItState()) {
                 document.body.insertAdjacentHTML("beforeend", addCss() + addHtml());
 
-                let modal = document.getElementById("myModal");
-                let span = document.getElementsByClassName("close")[0];
+                const modal = document.getElementById("myModal");
+                const span = document.getElementsByClassName("close")[0];
 
                 modal.style.display = "block";
 
