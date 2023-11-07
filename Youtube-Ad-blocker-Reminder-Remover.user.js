@@ -167,13 +167,6 @@
             });
             nonVid?.click();
 
-            // On the home page (d)esktop) at the top left
-            const parentElement = document.querySelector('ytd-ad-slot-renderer');
-            if (parentElement) {
-                const richItemRenderers = parentElement.closest('ytd-app').querySelector('ytd-rich-item-renderer');
-                richItemRenderers?.remove();
-            }
-
         }, 50);
 
         // Add a popup if the cookie does not exist
@@ -194,6 +187,13 @@
                     setGotItState(true);
                     modal.style.display = "none";
                 }
+            }
+
+            // On the home page (d)esktop) at the top left
+            const parentElement = document.querySelector('ytd-ad-slot-renderer');
+            if (parentElement) {
+                const richItemRenderers = parentElement.closest('ytd-app').querySelector('ytd-rich-item-renderer');
+                richItemRenderers?.remove();
             }
         }, 1000);
 
