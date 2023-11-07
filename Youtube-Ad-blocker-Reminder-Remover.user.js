@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -11,8 +11,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function()
- {
+(function () {
     //
     //      Config
     //
@@ -50,19 +49,19 @@
     };
 
     const keyEvent = new KeyboardEvent("keydown", {
-      key: "k",
-      code: "KeyK",
-      keyCode: 75,
-      which: 75,
-      bubbles: true,
-      cancelable: true,
-      view: window
+        key: "k",
+        code: "KeyK",
+        keyCode: 75,
+        which: 75,
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
 
     let mouseEvent = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: window,
+        bubbles: true,
+        cancelable: true,
+        view: window,
     });
 
     //This is used to check if the video has been unpaused already
@@ -72,9 +71,9 @@
     // Old variable but could work in some cases
     window.__ytplayer_adblockDetected = false;
 
-    if(adblocker) addblocker();
-    if(removePopup) popupRemover();
-    if(removePopup) observer.observe(document.body, observerConfig);
+    if (adblocker) addblocker();
+    if (removePopup) popupRemover();
+    if (removePopup) observer.observe(document.body, observerConfig);
 
     // Remove Them pesski popups
     function popupRemover() {
@@ -102,15 +101,15 @@
             if (popup) {
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
-                if(popupButton) popupButton.click();
+                if (popupButton) popupButton.click();
                 // if(popupButton2) popupButton2.click();
                 popup.remove();
                 unpausedAfterSkip = 2;
 
                 fullScreenButton.dispatchEvent(mouseEvent);
-              
+
                 setTimeout(() => {
-                  fullScreenButton.dispatchEvent(mouseEvent);
+                    fullScreenButton.dispatchEvent(mouseEvent);
                 }, 500);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
@@ -126,10 +125,8 @@
         }, 1000);
     }
     // undetected adblocker method
-    function addblocker()
-    {
-        setInterval(() =>
-                    {
+    function addblocker() {
+        setInterval(() => {
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
@@ -140,9 +137,9 @@
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
             const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
             const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
+            const sidebarAd = document.querySelector('ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]');
 
-            if (ad)
-            {
+            if (ad) {
                 const video = document.querySelector('video');
                 video.playbackRate = 10;
                 video.volume = 0;
@@ -156,23 +153,53 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
+            sidebarAd?.remove();
             sponsor?.forEach((element) => {
-                 if (element.getAttribute("id") === "panels") {
+                if (element.getAttribute("id") === "panels") {
                     element.childNodes?.forEach((childElement) => {
-                      if (childElement.data.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
-                          //Skipping the Chapters section
+                        if (childElement.data?.targetId && childElement.data.targetId !== "engagement-panel-macro-markers-description-chapters")
+                            //Skipping the Chapters section
                             childElement.remove();
-                          });
-                       } else {
-                           element.remove();
-                       }
-             });
+                    });
+                } else {
+                    element.remove();
+                }
+            });
             nonVid?.click();
-        }, 50)
+
+        }, 50);
+
+        // Add a popup if the cookie does not exist
+        setTimeout(() => {
+            if (!getGotItState()) {
+                document.body.insertAdjacentHTML("beforeend", addCss() + addHtml());
+
+                const modal = document.getElementById("myModal");
+                const span = document.getElementsByClassName("close")[0];
+
+                modal.style.display = "block";
+
+                span.onclick = function () {
+                    modal.style.display = "none";
+                }
+
+                document.querySelector('.gotIt').onclick = function () {
+                    setGotItState(true);
+                    modal.style.display = "none";
+                }
+            }
+
+            // On the home page (d)esktop) at the top left
+            const parentElement = document.querySelector('ytd-ad-slot-renderer');
+            if (parentElement) {
+                const richItemRenderers = parentElement.closest('ytd-app').querySelector('ytd-rich-item-renderer');
+                richItemRenderers?.remove();
+            }
+        }, 1000);
+
     }
     // Unpause the video Works most of the time
-    function unPauseVideo(video)
-    {
+    function unPauseVideo(video) {
         if (!video) return;
         if (video.paused) {
             // Simulate pressing the "k" key to unpause the video
@@ -181,8 +208,7 @@
             if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
         } else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
     }
-    function removeJsonPaths(domains, jsonPaths)
-    {
+    function removeJsonPaths(domains, jsonPaths) {
         const currentDomain = window.location.hostname;
         if (!domains.includes(currentDomain)) return;
 
@@ -191,7 +217,7 @@
             let obj = window;
             let previousObj = null;
             let partToSetUndefined = null;
-        
+
             for (const part of pathParts) {
                 if (obj.hasOwnProperty(part)) {
                     previousObj = obj; // Keep track of the parent object.
@@ -201,7 +227,7 @@
                     break; // Stop when we reach a non-existing part.
                 }
             }
-        
+
             // If we've identified a valid part to set to undefined, do so.
             if (previousObj && partToSetUndefined !== null) {
                 previousObj[partToSetUndefined] = undefined;
@@ -209,8 +235,99 @@
         });
     }
     // Observe and remove ads when new content is loaded dynamically
-    const observer = new MutationObserver(() =>
-    {
+    const observer = new MutationObserver(() => {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });
+
+    function getGotItState() {
+        return localStorage.getItem('yAdbgotIt') === 'true';
+    }
+
+    function setGotItState(state) {
+        localStorage.setItem('yAdbgotIt', state.toString());
+    }
+
+    function addCss() {
+        return `<style>
+
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 99999;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.4);
+          font-size: 16px;
+          max-width: 500px;
+        }
+
+        .modal .content { 
+            margin-top: 30px;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border: 5px #f90000 solid;
+            border-radius: 10px;
+        }
+        
+        .close {
+          color: #aaaaaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+          color: #000;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        </style>`;
+    }
+
+
+    function addHtml() {
+        if (/fr/.test(navigator.language)) {
+            return `<div id="myModal" class="modal">
+            <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="content">
+            <b> AdSkip YouTube </b>:<br>
+            <b>Pour que ce plugin fonctionne, désactivez votre bloqueur de publicités :</b> ajoutez YouTube à la liste blanche de toutes les extensions Firefox qui bloquent les publicités ou de tout élément tiers qui désactive les publicités. Ne vous inquiétez pas, ce script supprime les publicités intrusives sur les vidéos.
+            <br><br>
+
+            <button class="gotIt">J'ai compris !</button>
+            </div>
+        </div>
+
+    </div>`;
+        } else {
+            return `<div id="myModal" class="modal">
+            <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="content">
+            <b> AdSkip YouTube </b>:<br>
+            <b>For this plugin to work, turn off your ad blocker :</b> Add YouTube to the whitelist of all Firefox extensions that block ads or any third-party items that disable ads. Don't worry, this script removes intrusive ads on videos.
+            <br><br>
+
+            <button class="gotIt">Got it !</button>
+            </div>
+        </div>
+
+    </div>`;
+        }
+    }
+
+
 })();
