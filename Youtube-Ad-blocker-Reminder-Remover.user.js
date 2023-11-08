@@ -296,7 +296,8 @@
             'ytd-in-feed-ad-layout-renderer',
             '.ytd-video-masthead-ad-v3-renderer',
             'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]',
-            'ytd-merch-shelf-renderer' // Remove store stuff below videos : https://www.zupimages.net/up/23/45/1npf.png
+            'ytd-merch-shelf-renderer', // Remove store stuff below videos : https://www.zupimages.net/up/23/45/1npf.png
+            '.ytd-banner-promo-renderer' // Removes the large banner that occasionally appears at the top of the home page offering to subscribe to Premium
         ];
         const sponsorSelectors = ['div#player-ads.style-scope.ytd-watch-flexy', 'div#panels.style-scope.ytd-watch-flexy'];
         const nonVidSelector = '.ytp-ad-skip-button-modern';
@@ -339,11 +340,13 @@
                     nonVid?.click();
 
                     // On the home page (desktop) at the top left
+                    // It works, but sometimes it causes the current page to lag.
+                    /*
                     const parentElement = document.querySelector('ytd-ad-slot-renderer');
                     if (parentElement) {
                         const richItemRenderers = parentElement.closest('ytd-app').querySelector('ytd-rich-item-renderer');
                         richItemRenderers?.remove();
-                    }
+                    }*/
                 }
             }
         };
