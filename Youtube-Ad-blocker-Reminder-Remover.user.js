@@ -126,6 +126,28 @@
     }
     // undetected adblocker method
     function addblocker() {
+
+        // Do not display as they will be deleted
+        const css = 
+            `
+            .ad-showing, .videoAdUiSkipButton, .ytp-ad-skip-button, .ytp-ad-skip-button-modern { display: none; }
+            ytd-action-companion-ad-renderer { display: none; }
+            div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint { display: none; }
+            div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer { display: none; }
+            div#main-container.style-scope.ytd-promoted-video-renderer { display: none; }
+            ytd-in-feed-ad-layout-renderer { display: none; }
+            .ytd-video-masthead-ad-v3-renderer { display: none; }
+            ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] { display: none; }
+            ytd-merch-shelf-renderer { display: none; }
+            .ytd-banner-promo-renderer { display: none; }
+        `;
+        const head = document.head || document.getElementsByTagName('head')[0];
+        const styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.id = 'adSkip'; // for debug: document.querySelector('#adSkip').remove()
+        styleElement.innerHTML = css;
+        head.appendChild(styleElement);
+
         handleAds();
 
         // Add a popup if the cookie does not exist
