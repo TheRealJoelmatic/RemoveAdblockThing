@@ -58,6 +58,7 @@ Once you've installed and enabled the userscript, it should start working automa
 If you have any suggestions, bug reports, or want to contribute to this userscript, feel free to create issues or pull requests in this GitHub repository.
 
 Contributors
+- [Madriix](https://github.com/Madriix)
 - [AngelPuzzle](https://github.com/angelapuzzle)
 - [oSumAtrIX](https://github.com/oSumAtrIX)
 - [Albedo-13](https://github.com/Albedo-13)
