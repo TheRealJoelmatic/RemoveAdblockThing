@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "AdSkip YouTube",
+  "version": "2.6.10",
+  "description": "Remove Adblock message on YouTube 'Ad blockers are not allowed on YouTube'.",
+  "icons": {
+    "32": "icons/icon-32.png",
+    "96": "icons/icon-96.png"
+  },
+  "permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://youtube.com/*",
+        "*://youtu.be/*"
+      ],
+      "js": [
+        "Youtube-Ad-blocker-Reminder-Remover.user.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
