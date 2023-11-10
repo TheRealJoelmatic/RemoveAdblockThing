@@ -140,7 +140,7 @@
             ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] { display: none; }
             ytd-merch-shelf-renderer { display: none; }
             .ytd-banner-promo-renderer { display: none; }
-            ytd-statement-banner-renderer { display: none; }
+            ytd-statement-banner-renderer, ytd-ad-slot-renderer { display: none; }
         `;
         const head = document.head || document.getElementsByTagName('head')[0];
         const styleElement = document.createElement('style');
