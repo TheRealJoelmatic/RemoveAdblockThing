@@ -146,7 +146,7 @@
                 const video = document.querySelector('video');
                 video.playbackRate = 10;
                 video.volume = 0;
-                video.currentTime = video.duration;
+                video.currentTime = isFinite(video.duration)? video.duration : 0; // handles NaN video duration
                 skipBtn?.click();
             }
 
@@ -159,7 +159,7 @@
             sponsor?.forEach((element) => {
                  if (element.getAttribute("id") === "panels") {
                     element.childNodes?.forEach((childElement) => {
-                      if (childElement.data.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
+                      if (childElement.data?.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
                           //Skipping the Chapters section
                             childElement.remove();
                           });
