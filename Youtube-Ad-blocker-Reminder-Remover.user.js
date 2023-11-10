@@ -151,25 +151,7 @@
 
         handleAds();
 
-        // Add a popup if the cookie does not exist
-        if (!getGotItState()) {
-            document.body.insertAdjacentHTML("beforeend", addCss() + addHtml());
-
-            const modal = document.getElementById("myModal");
-            const span = document.getElementsByClassName("close")[0];
-
-            modal.style.display = "block";
-
-            span.onclick = function () {
-                modal.style.display = "none";
-            }
-
-            document.querySelector('.gotIt').onclick = function () {
-                setGotItState(true);
-                modal.style.display = "none";
-            }
-        }
-
+        localStorage.removeItem('yAdbgotIt');
     }
 
     function handleAds() {
@@ -284,97 +266,5 @@
     /*const observer = new MutationObserver(() => {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });*/
-
-    function getGotItState() {
-        return localStorage.getItem('yAdbgotIt') === 'true';
-    }
-
-    function setGotItState(state) {
-        localStorage.setItem('yAdbgotIt', state.toString());
-    }
-
-    function addCss() {
-        return `
-            <style>
-                .modal {
-                    display: none;
-                    position: fixed;
-                    z-index: 99999;
-                    padding-top: 100px;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    overflow: auto;
-                    background-color: rgb(0,0,0);
-                    background-color: rgba(0,0,0,0.4);
-                    font-size: 16px;
-                    max-width: 500px;
-                }
-
-                .modal .content { 
-                     margin-top: 30px;
-                }
-                
-                .modal-content {
-                    background-color: #fefefe;
-                    margin: auto;
-                    padding: 20px;
-                    border: 1px solid #888;
-                    width: 80%;
-                    border: 5px #f90000 solid;
-                    border-radius: 10px;
-                }
-                
-                .close {
-                    color: #aaaaaa;
-                    float: right;
-                    font-size: 28px;
-                    font-weight: bold;
-                }
-                
-                .close:hover,
-                .close:focus {
-                    color: #000;
-                    text-decoration: none;
-                    cursor: pointer;
-                }
-            </style>
-        `;
-    }
-
-
-    function addHtml() {
-        if (/fr/.test(navigator.language)) {
-            return `
-                <div id="myModal" class="modal">
-                    <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <div class="content">
-                        <b> AdSkip YouTube </b>:<br>
-                        <b>Pour que ce plugin fonctionne, désactivez votre bloqueur de publicités :</b> ajoutez YouTube à la liste blanche de toutes les extensions Firefox qui bloquent les publicités ou de tout élément tiers qui désactive les publicités. Ne vous inquiétez pas, ce script supprime les publicités intrusives sur les vidéos.
-                        <br><br>
-                        <button class="gotIt">J'ai compris !</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        } else {
-            return `
-                <div id="myModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <div class="content">
-                            <b> AdSkip YouTube </b>:<br>
-                            <b>For this plugin to work, turn off your ad blocker :</b> Add YouTube to the whitelist of all Firefox extensions that block ads or any third-party items that disable ads. Don't worry, this script removes intrusive ads on videos.
-                            <br><br>
-                            <button class="gotIt">Got it !</button>
-                        </div>
-                    </div>
-
-                </div>
-            `;
-        }
-    }
 
 })();
