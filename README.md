@@ -1,5 +1,5 @@
 # Remove the Adblock Popup from YOUTUBE
-[![picture](https://github.com/TheRealJoelmatic/RemoveAdblockThing/blob/main/Thumnail.jpg?raw=true)](https://www.youtube.com/watch?v=jvSf10lgxs4&ab_channel=Joelmatic)
+[![picture](https://github.com/TheRealJoelmatic/RemoveAdblockThing/blob/main/Thumbnail.jpg?raw=true)](https://www.youtube.com/watch?v=jvSf10lgxs4&ab_channel=Joelmatic)
 ## Introduction
 
 This repository contains a userscript designed to remove the annoying "Ad blocker are not allowed on Youtube" popup. Follow the instructions below to get started.
