@@ -1,15 +1,16 @@
 # Remove the Adblock Popup from YOUTUBE
-[![picture](https://github.com/TheRealJoelmatic/RemoveAdblockThing/blob/main/Thumbnail.jpg?raw=true)](https://www.youtube.com/watch?v=jvSf10lgxs4&ab_channel=Joelmatic)
+
+[![picture](Thumbnail.jpg?raw=true)](https://www.youtube.com/watch?v=jvSf10lgxs4&ab_channel=Joelmatic)
+
 ## Introduction
 
-This repository contains a userscript designed to remove the annoying "Ad blocker are not allowed on Youtube" popup. Follow the instructions below to get started.
-We also have an undetected way of skipping ads if you get blocked from the video player.
+This repository contains a userscript designed to remove the annoying "Ad blocker is not allowed on Youtube" popup. Follow the instructions below to get started. We also have an undetected way of skipping ads if you get blocked from the video player.
 
 ## Table of Contents:
 
 1. [Introduction](#introduction)
 2. [Installation](#installation)
-3. [How to bypass the video player ban from using an ad blocker](#how-to-bypass-the-video-player-ban-from-using-an-ad-blocker)
+3. [How to Use the Undetected AdBlock](#how-to-use-the-undetected-adblock)
 4. [Usage](#usage)
 5. [Contribution](#contribution)
 6. [License](#license)
@@ -30,28 +31,27 @@ We also have an undetected way of skipping ads if you get blocked from the video
    In the Tampermonkey Dashboard, click on the "Utilities" tab and select "Create a new script."
 
 4. **Install the Script**:
-   [Click Here and Press Install](https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js).
+   [Click Here and Press Install](Youtube-Ad-blocker-Reminder-Remover.user.js?raw=True).
 
 5. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
 
 6. **Disable your adblocker**:
-   **whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads**. Don't worry our script removes ads on youtube.
+   Whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry; our script removes ads on YouTube.
 
-## How to use the undetected AdBlock
+## How to Use the Undetected AdBlock
 
-Note this also allows you to watch videos when your video player banned from using adblock.
+Note: This also allows you to watch videos when your video player is banned from using an adblock.
 
 1. **Install the script**:
-   Install the script using the instructions above
+   Install the script using the instructions above.
 
 2. **Disable your adblocker**:
-   **whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads**. Don't worry our script removes ads
-
+   Whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry; our script removes ads.
 
 ## Usage
 
-Once you've installed and enabled the userscript, it should start working automatically Enjoy.
+Once you've installed and enabled the userscript, it should start working automatically. Enjoy.
 
 ## Contribution
 
@@ -59,7 +59,6 @@ If you have any suggestions, bug reports, or want to contribute to this userscri
 
 ### Contributors
 
-<br />
 <a href="https://github.com/TheRealJoelmatic/RemoveAdblockThing/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=TheRealJoelmatic/RemoveAdblockThing" />
 </a>
