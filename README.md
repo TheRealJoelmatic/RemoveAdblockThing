@@ -57,21 +57,12 @@ Once you've installed and enabled the userscript, it should start working automa
 
 If you have any suggestions, bug reports, or want to contribute to this userscript, feel free to create issues or pull requests in this GitHub repository.
 
-Contributors
-- [Madriix](https://github.com/Madriix)
-- [AngelPuzzle](https://github.com/angelapuzzle)
-- [oSumAtrIX](https://github.com/oSumAtrIX)
-- [Albedo-13](https://github.com/Albedo-13)
-- [SleepingPig35](https://github.com/SleepingPig35)
-- [marjansimic](https://github.com/marjansimic)
-- [Pecunia201](https://github.com/Pecunia201)
-- [henryli17](https://github.com/henryli17)
-- [ClientNode](https://github.com/ClientNode)
-- [androgouws911](https://github.com/androgouws911)
-- [GrooveHacker](https://github.com/GrooveHacker)
-- [jordhanemmanuel](https://github.com/jordhanemmanuel)
-- [mabramishvili](https://github.com/mabramishvili)
-- [tkvarun35](https://github.com/tkvarun35)
+### Contributors
+
+<br />
+<a href="https://github.com/TheRealJoelmatic/RemoveAdblockThing/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=TheRealJoelmatic/RemoveAdblockThing" />
+</a>
 
 ## License
 
