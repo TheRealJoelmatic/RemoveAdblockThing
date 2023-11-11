@@ -111,7 +111,7 @@
               
                 setTimeout(() => {
                   fullScreenButton.dispatchEvent(mouseEvent);
-                }, 500);
+                }, 5);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
             }
@@ -123,7 +123,7 @@
             unPauseVideo(video1);
             unPauseVideo(video2);
 
-        }, 1000);
+        }, 10);
     }
     // undetected adblocker method
     function addblocker()
