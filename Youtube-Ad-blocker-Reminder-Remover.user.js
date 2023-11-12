@@ -67,18 +67,6 @@
     //This is used to check if the video has been unpaused already
     let unpausedAfterSkip = 0;
 
-    //Allows elements to be deleted more quickly as soon as the page has just been loaded
-    const intervalChanger = {
-        addblocker: 10,
-        popupRemover: 100
-    }
-
-    setTimeout(() => {
-        //Reset to default
-        intervalChanger.addblocker = 50;
-        intervalChanger.popupRemover = 1000;
-    }, 5000);
-
     if (debug) console.log("Remove Adblock Thing: Remove Adblock Thing: Script started");
     // Old variable but could work in some cases
     window.__ytplayer_adblockDetected = false;
@@ -140,7 +128,7 @@
             unPauseVideo(video1);
             unPauseVideo(video2);
 
-        }, intervalChanger.popupRemover);
+        }, 1000);
     }
     // undetected adblocker method
     function addblocker() {
@@ -220,7 +208,7 @@
 
             const nonVid = document.querySelector(nonVidSelector);
             nonVid?.click();
-        }, intervalChanger.addblocker);
+        }, 50);
     }
 
     // Unpause the video Works most of the time
