@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.4
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -159,7 +159,17 @@
             mainContainer?.remove();
             feedAd?.remove();
             mastheadAd?.remove();
-            sponsor?.forEach(element => element.remove());
+            sponsor?.forEach((element) => {
+                 if (element.getAttribute("id") === "panels") {
+                    element.childNodes?.forEach((childElement) => {
+                      if (childElement.data.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
+                          //Skipping the Chapters section
+                            childElement.remove();
+                          });
+                       } else {
+                           element.remove();
+                       }
+             });
             nonVid?.click();
         }
         requestIdleCallback(adblockerFunc);
