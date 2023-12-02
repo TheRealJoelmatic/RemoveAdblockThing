@@ -162,7 +162,7 @@
             sponsor?.forEach((element) => {
                  if (element.getAttribute("id") === "panels") {
                     element.childNodes?.forEach((childElement) => {
-                      if (childElement.data.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
+                      if (childElement.data?.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
                           //Skipping the Chapters section
                             childElement.remove();
                           });
