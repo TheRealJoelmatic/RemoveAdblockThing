@@ -11,8 +11,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function()
- {
+(function () {
     //
     //      Config
     //
@@ -50,19 +49,19 @@
     };
 
     const keyEvent = new KeyboardEvent("keydown", {
-      key: "k",
-      code: "KeyK",
-      keyCode: 75,
-      which: 75,
-      bubbles: true,
-      cancelable: true,
-      view: window
+        key: "k",
+        code: "KeyK",
+        keyCode: 75,
+        which: 75,
+        bubbles: true,
+        cancelable: true,
+        view: window
     });
 
     let mouseEvent = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: window,
+        bubbles: true,
+        cancelable: true,
+        view: window,
     });
 
     //This is used to check if the video has been unpaused already
@@ -72,9 +71,9 @@
     // Old variable but could work in some cases
     window.__ytplayer_adblockDetected = false;
 
-    if(adblocker) addblocker();
-    if(removePopup) popupRemover();
-    if(removePopup) observer.observe(document.body, observerConfig);
+    if (adblocker) addblocker();
+    if (removePopup) popupRemover();
+    if (removePopup) observer.observe(document.body, observerConfig);
 
     // Remove Them pesski popups
     function popupRemover() {
@@ -102,15 +101,15 @@
             if (popup) {
                 if (debug) console.log("Remove Adblock Thing: Popup detected, removing...");
 
-                if(popupButton) popupButton.click();
+                if (popupButton) popupButton.click();
                 // if(popupButton2) popupButton2.click();
                 popup.remove();
                 unpausedAfterSkip = 2;
 
                 fullScreenButton.dispatchEvent(mouseEvent);
-              
+
                 setTimeout(() => {
-                  fullScreenButton.dispatchEvent(mouseEvent);
+                    fullScreenButton.dispatchEvent(mouseEvent);
                 }, 500);
 
                 if (debug) console.log("Remove Adblock Thing: Popup removed");
@@ -126,10 +125,8 @@
         }, 1000);
     }
     // undetected adblocker method
-    function addblocker()
-    {
-        setInterval(() =>
-                    {
+    function addblocker() {
+        setInterval(() => {
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
@@ -143,8 +140,7 @@
             const youtubepremium = document.getElementById('masthead-ad');
 
 
-            if (ad)
-            {
+            if (ad) {
                 const video = document.querySelector('video');
                 video.playbackRate = 10;
                 video.volume = 0;
@@ -160,22 +156,21 @@
             youtubepremium?.remove();
             mastheadAd?.remove();
             sponsor?.forEach((element) => {
-                 if (element.getAttribute("id") === "panels") {
+                if (element.getAttribute("id") === "panels") {
                     element.childNodes?.forEach((childElement) => {
-                      if (childElement.data.targetId && childElement.data.targetId !=="engagement-panel-macro-markers-description-chapters")
-                          //Skipping the Chapters section
+                        if (childElement.data.targetId && childElement.data.targetId !== "engagement-panel-macro-markers-description-chapters")
+                            //Skipping the Chapters section
                             childElement.remove();
-                          });
-                       } else {
-                           element.remove();
-                       }
-             });
+                    });
+                } else {
+                    element.remove();
+                }
+            });
             nonVid?.click();
         }, 50)
     }
     // Unpause the video Works most of the time
-    function unPauseVideo(video)
-    {
+    function unPauseVideo(video) {
         if (!video) return;
         if (video.paused) {
             // Simulate pressing the "k" key to unpause the video
@@ -184,8 +179,7 @@
             if (debug) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
         } else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
     }
-    function removeJsonPaths(domains, jsonPaths)
-    {
+    function removeJsonPaths(domains, jsonPaths) {
         const currentDomain = window.location.hostname;
         if (!domains.includes(currentDomain)) return;
 
@@ -194,7 +188,7 @@
             let obj = window;
             let previousObj = null;
             let partToSetUndefined = null;
-        
+
             for (const part of pathParts) {
                 if (obj.hasOwnProperty(part)) {
                     previousObj = obj; // Keep track of the parent object.
@@ -204,7 +198,7 @@
                     break; // Stop when we reach a non-existing part.
                 }
             }
-        
+
             // If we've identified a valid part to set to undefined, do so.
             if (previousObj && partToSetUndefined !== null) {
                 previousObj[partToSetUndefined] = undefined;
@@ -212,8 +206,7 @@
         });
     }
     // Observe and remove ads when new content is loaded dynamically
-    const observer = new MutationObserver(() =>
-    {
+    const observer = new MutationObserver(() => {
         removeJsonPaths(domainsToRemove, jsonPathsToRemove);
     });
 })();
