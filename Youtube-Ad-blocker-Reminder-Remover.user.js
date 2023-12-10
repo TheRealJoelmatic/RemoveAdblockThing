@@ -123,11 +123,16 @@
             const sparklesContainer = document.querySelector('div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer');
             const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
+            const popupAd = document.querySelector("body > ytd-app > ytd-popup-container > tp-yt-paper-dialog") // ad center
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
             const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
             const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
             const youtubepremium = document.getElementById('masthead-ad');
 
+            if(popupAd){
+              popupAd.remove();
+                console.log("Remove Adblock Thing: Popup Ad Center removed!");
+            }
 
             if (ad)
             {
