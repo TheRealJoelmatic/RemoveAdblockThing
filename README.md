@@ -33,15 +33,9 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
 4. **Disable your adblocker**:
    Whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry; our script removes ads on YouTube.
 
-## How to Use the Undetected AdBlock
 
 Note: This also allows you to watch videos when your video player is banned from using an adblock.
 
-1. **Install the script**:
-   Install the script using the instructions above.
-
-2. **Disable your adblocker**:
-   Whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry; our script removes ads.
 
 ## Usage
 
