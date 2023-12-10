@@ -72,7 +72,7 @@
     // Varables used for updater
     //
 
-    let hasIgronedUpdate = false;
+    let hasIgnoredUpdate = false;
 
     //
     // Setup
@@ -245,7 +245,7 @@
 
     function checkForUpdate(){
 
-        if (hasIgronedUpdate){
+        if (hasIgnoredUpdate){
             return;
         }
 
@@ -277,9 +277,9 @@
             }
         })
         .catch(error => {
-            hasIgronedUpdate = true;
+            hasIgnoredUpdate = true;
             console.error('Remove Adblock Thing: Error checking for updates:', error);
         });
-        hasIgronedUpdate = true;
+        hasIgnoredUpdate = true;
     }
 })();
