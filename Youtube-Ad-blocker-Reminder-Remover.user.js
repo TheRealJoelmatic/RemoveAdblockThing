@@ -116,21 +116,20 @@
     {
         setInterval(() =>{
             const ad = [...document.querySelectorAll('.ad-showing')][0];
-
+            const popupAd = document.querySelector("style-scope, .yt-about-this-ad-renderer");
             const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
             const sidAd = document.querySelector('ytd-action-companion-ad-renderer');
             const displayAd = document.querySelector('div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint');
             const sparklesContainer = document.querySelector('div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer');
             const mainContainer = document.querySelector('div#main-container.style-scope.ytd-promoted-video-renderer');
             const feedAd = document.querySelector('ytd-in-feed-ad-layout-renderer');
-            const popupAd = document.querySelector("body > ytd-app > ytd-popup-container > tp-yt-paper-dialog") // ad center
             const mastheadAd = document.querySelector('.ytd-video-masthead-ad-v3-renderer');
             const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
             const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
             const youtubepremium = document.getElementById('masthead-ad');
 
             if(popupAd){
-              popupAd.remove();
+              popupAd.parentElement.parentElement.remove();
                 console.log("Remove Adblock Thing: Popup Ad Center removed!");
             }
 
