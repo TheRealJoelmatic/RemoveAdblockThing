@@ -24,19 +24,13 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
    - [Tampermonkey for Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
    - [Tampermonkey for Opera/OperaGX](https://addons.opera.com/en-gb/extensions/details/tampermonkey-beta/)
 
-2. **Open Tampermonkey Dashboard**:
-   Click on the Tampermonkey extension icon in your browser and select "Dashboard."
-
-3. **Create a New Script**:
-   In the Tampermonkey Dashboard, click on the "Utilities" tab and select "Create a new script."
-
-4. **Install the Script**:
+2. **Install the Script**:
    [Click Here and Press Install](Youtube-Ad-blocker-Reminder-Remover.user.js?raw=True).
 
-5. **Enable the Script**:
+3. **Enable the Script**:
    Enable the script by clicking the switch next to the script name in the Tampermonkey Dashboard.
 
-6. **Disable your adblocker**:
+4. **Disable your adblocker**:
    Whitelist YouTube on any Chrome extensions that block ads or any third-party things that disable ads. Don't worry; our script removes ads on YouTube.
 
 ## How to Use the Undetected AdBlock
