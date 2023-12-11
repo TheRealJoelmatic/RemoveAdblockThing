@@ -181,7 +181,7 @@
                 blockAdButtonConfirm?.click();
                 closeAdCenterButton?.click();
 
-                if (popupContainer) popupContainer.style.display = 'showen';
+                if (popupContainer) popupContainer.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
             }
