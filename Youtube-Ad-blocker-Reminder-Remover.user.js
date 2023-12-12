@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -161,7 +161,7 @@
                 const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                 const blockAdButton = document.querySelector('[label="Block ad"]');
                 const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                const closeAdCenterButton = document.querySelector('zBmRhe-Bz112c');
+                const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
 
                 if (video) video.playbackRate = 10;
                 if (video) video.volume = 0;
