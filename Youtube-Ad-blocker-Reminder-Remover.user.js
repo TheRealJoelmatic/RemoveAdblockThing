@@ -195,22 +195,7 @@
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
         const style = document.createElement('style');
-
-       /*
-       style.textContent = `
-            ytd-action-companion-ad-renderer,
-            div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
-            div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer,
-            div#main-container.style-scope.ytd-promoted-video-renderer,
-            ytd-in-feed-ad-layout-renderer,
-            .ytd-video-masthead-ad-v3-renderer,
-            div#player-ads.style-scope.ytd-watch-flexy,
-            div#panels.style-scope.ytd-watch-flexy,
-            #masthead-ad {
-                display: none !important;
-            }
-        `;
-        */
+     
         style.textContent = `
             ytd-action-companion-ad-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
