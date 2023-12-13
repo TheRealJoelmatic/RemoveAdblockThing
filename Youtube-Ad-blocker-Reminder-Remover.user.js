@@ -92,6 +92,7 @@
             const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
+            const whiteBoxPopup = document.querySelector("body > ytd-app > ytd-popup-container");
             const popupButton = document.getElementById("dismiss-button");
 
             const video1 = document.querySelector("#movie_player > video.html5-main-video");
@@ -112,6 +113,8 @@
                 if(popupButton) popupButton.click();
 
                 popup.remove();
+                whiteBoxPopup.remove();
+             
                 unpausedAfterSkip = 2;
 
                 fullScreenButton.dispatchEvent(mouseEvent);
