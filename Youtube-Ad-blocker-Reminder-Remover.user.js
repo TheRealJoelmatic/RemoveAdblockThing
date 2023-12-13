@@ -195,7 +195,7 @@
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
         const style = document.createElement('style');
-
+     
         style.textContent = `
             ytd-action-companion-ad-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
@@ -204,7 +204,7 @@
             ytd-in-feed-ad-layout-renderer,
             .ytd-video-masthead-ad-v3-renderer,
             div#player-ads.style-scope.ytd-watch-flexy,
-            div#panels.style-scope.ytd-watch-flexy,
+
             #masthead-ad {
                 display: none !important;
             }
@@ -213,17 +213,16 @@
         document.head.appendChild(style);
 
         sponsor?.forEach((element) => {
-             if (element.getAttribute("id") === "panels") {
+             if (element.getAttribute("id") === "rendering-content") {
                 element.childNodes?.forEach((childElement) => {
                   if (childElement?.data.targetId && childElement?.data.targetId !=="engagement-panel-macro-markers-description-chapters"){
                       //Skipping the Chapters section
-                        childElement.style.display = 'none';
+                        element.style.display = 'none';
                     }
                    });
-            } else {
-                element.style.display = 'none';
             }
          });
+
          if (debugMessages) console.log("Remove Adblock Thing: Removed page ads (✔️)");
     }
 
@@ -283,3 +282,4 @@
         hasIgnoredUpdate = true;
     }
 })();
+
