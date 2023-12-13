@@ -173,7 +173,6 @@
 
                 openAdCenterButton?.click();
 
-              // <yt-about-this-ad-renderer dialog="true" class="style-scope ytd-popup-container" tabindex="-1"><!--css-build:shady--><!--css-build:shady--><iframe id="iframe" class="style-scope yt-about-this-ad-renderer" src="about:blank"></iframe></yt-about-this-ad-renderer>
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
 
                 if (popupContainer) popupContainer.style.display = 'none';
