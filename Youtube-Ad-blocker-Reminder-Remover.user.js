@@ -162,6 +162,7 @@
                 const blockAdButton = document.querySelector('[label="Block ad"]');
                 const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                 const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
+                const adCenterDialog = document.querySelector('yt-about-this-ad-renderer');
 
                 if (video) video.playbackRate = 10;
                 if (video) video.volume = 0;
@@ -180,6 +181,7 @@
                 blockAdButtonConfirm?.click();
                 closeAdCenterButton?.click();
 
+                if (adCenterDialog) adCenterDialog.style.display = 'none';
                 if (popupContainer) popupContainer.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
