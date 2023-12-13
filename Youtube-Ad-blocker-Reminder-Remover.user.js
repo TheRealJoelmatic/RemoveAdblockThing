@@ -162,6 +162,7 @@
                 const blockAdButton = document.querySelector('[label="Block ad"]');
                 const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                 const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
+                const adCenterDialog = document.querySelector('yt-about-this-ad-renderer');
 
                 if (video) video.playbackRate = 10;
                 if (video) video.volume = 0;
@@ -172,6 +173,7 @@
 
                 openAdCenterButton?.click();
 
+              // <yt-about-this-ad-renderer dialog="true" class="style-scope ytd-popup-container" tabindex="-1"><!--css-build:shady--><!--css-build:shady--><iframe id="iframe" class="style-scope yt-about-this-ad-renderer" src="about:blank"></iframe></yt-about-this-ad-renderer>
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
 
                 if (popupContainer) popupContainer.style.display = 'none';
@@ -180,6 +182,7 @@
                 blockAdButtonConfirm?.click();
                 closeAdCenterButton?.click();
 
+                if (adCenterDialog) adCenterDialog.style.display = 'none';
                 if (popupContainer) popupContainer.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
