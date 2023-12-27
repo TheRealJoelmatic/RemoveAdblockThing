@@ -112,7 +112,7 @@
                 if(popupButton) popupButton.click();
 
                 popup.remove();
-                unpausedAfterSkip = 2;
+                unpausedAfterSkip = 1;
 
                 fullScreenButton.dispatchEvent(mouseEvent);
 
@@ -162,7 +162,6 @@
                 const blockAdButton = document.querySelector('[label="Block ad"]');
                 const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                 const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                const adCenterDialog = document.querySelector('yt-about-this-ad-renderer');
 
                 if (video) video.playbackRate = 10;
                 if (video) video.volume = 0;
@@ -181,7 +180,10 @@
                 blockAdButtonConfirm?.click();
                 closeAdCenterButton?.click();
 
-                if (adCenterDialog) adCenterDialog.style.display = 'none';
+                setTimeout(() => {
+                    closeAdCenterButton?.click();
+                }, 500);
+
                 if (popupContainer) popupContainer.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
@@ -197,7 +199,7 @@
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
         const style = document.createElement('style');
-     
+
         style.textContent = `
             ytd-action-companion-ad-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
@@ -284,4 +286,3 @@
         hasIgnoredUpdate = true;
     }
 })();
-
