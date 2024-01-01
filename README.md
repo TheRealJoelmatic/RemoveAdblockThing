@@ -43,7 +43,7 @@ Once you've installed and enabled the userscript, it should start working automa
 
 ## Contribution
 
-If you have any suggestions, bug reports, or want to contribute to this userscript, feel free to create issues or pull requests in this GitHub repository.
+If you have any suggestions, or bug reports, or want to contribute to this userscript, feel free to create issues or pull requests in this GitHub repository.
 
 ### Contributors
 
