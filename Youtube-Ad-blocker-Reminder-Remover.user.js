@@ -148,12 +148,12 @@
                 removePageAds();
             }
 
+            var video = document.querySelector('video');
+            var videoPlayback = video.playbackRate
             if (ad)
             {
 
                 if (debugMessages) console.log("Remove Adblock Thing: Found Ad");
-
-                const video = document.querySelector('video');
 
                 const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
                 const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
@@ -183,6 +183,10 @@
                 if (popupContainer) popupContainer.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
+            } else {
+                if(video.playbackRate == 10){
+                    video.playbackRate = videoPlayback
+                }
             }
 
         }, 50)
