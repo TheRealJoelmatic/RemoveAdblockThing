@@ -9,6 +9,7 @@
 // @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
+// @require      https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 // ==/UserScript==
 
 (function()
@@ -87,7 +88,8 @@
 
     // Remove Them pesski popups
     function popupRemover() {
-        setInterval(() => {
+        const removePopupLoop = () => {
+            requestIdleCallback(removePopupLoop, {timeout: 500});
 
             const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
@@ -125,21 +127,20 @@
 
             // Check if the video is paused after removing the popup
             if (!unpausedAfterSkip > 0) return;
-
+          
             // UnPause The Video
             unPauseVideo(video1);
             unPauseVideo(video2);
-
-        }, 1000);
+        }
+        requestIdleCallback(removePopupLoop);
     }
     // undetected adblocker method
     function removeAds()
     {
-
         if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
-
-        setInterval(() =>{
-
+        const adblockerFunc = () => {
+            requestIdleCallback(adblockerFunc, {timeout: 50});
+          
             const ad = [...document.querySelectorAll('.ad-showing')][0];
 
             //remove page ads
@@ -188,8 +189,8 @@
                     video.playbackRate = videoPlayback
                 }
             }
-
-        }, 50)
+        }
+        requestIdleCallback(adblockerFunc);
 
         removePageAds();
     }
