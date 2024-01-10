@@ -10,10 +10,9 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
 
 1. [Introduction](#introduction)
 2. [Installation](#installation)
-3. [How to Use the Undetected AdBlock](#how-to-use-the-undetected-adblock)
-4. [Usage](#usage)
-5. [Contribution](#contribution)
-6. [License](#license)
+3. [Common Issues](#Common-Issues)
+4. [Contribution](#contribution)
+5. [License](#license)
 
 ## Installation
 
@@ -36,10 +35,21 @@ This repository contains a userscript designed to remove the annoying "Ad blocke
 
 Note: This also allows you to watch videos when your video player is banned from using an adblock.
 
+## Common Issues
 
-## Usage
+**"Ad Blockers violate Youtube Terms Of Service" OR Just a black screen**
 
-Once you've installed and enabled the userscript, it should start working automatically. Enjoy.
+This happens when there is an adblock other than the script running. Common ways you may be blocking ads accidentally on Youtube is:
+
+- **Adblock extension:** Disable or whitelist YouTube on your ad blocker extension.
+
+- **Browser built-in adblock:** Some browsers have built-in ad blockers. Disable or configure them.
+
+- **Other Tampermonkey scripts:** Scripts like YouTube enhancer may conflict. Disable them one by one to identify the issue.
+
+- **Wi-Fi/DNS/Firewall adblock rules:** Check network settings for any ad-blocking configurations.
+
+- **Windows hosts file rules:** Inspect the Windows hosts file (C:\Windows\System32\drivers\etc) for ad-blocking rules.
 
 ## Contribution
 
