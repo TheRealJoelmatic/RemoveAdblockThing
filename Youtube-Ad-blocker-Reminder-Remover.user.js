@@ -163,6 +163,8 @@
                 const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                 const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
 
+                const hidebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
+
                 if (video) video.playbackRate = 10;
                 if (video) video.volume = 0;
                 if (video) video.currentTime = video.duration || 0;
@@ -174,7 +176,10 @@
 
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
 
-                if (popupContainer) popupContainer.style.display = 'none';
+                if (popupContainer) {
+                  popupContainer.style.display = 'none';
+                  hidebackdrop.style.display = 'none';
+              }
 
                 blockAdButton?.click();
                 blockAdButtonConfirm?.click();
