@@ -320,12 +320,6 @@
                 if (githubVersion > currentVersion) {
                     console.log('Remove Adblock Thing: A new version is available. Please update your script.');
 
-                    var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
-
-                    if (result) {
-                        window.location.replace(scriptUrl);
-                    }
-
                 } else {
                     console.log('Remove Adblock Thing: You have the latest version of the script.');
                 }
