@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -67,6 +67,9 @@
 
     // Store the initial URL
     let currentUrl = window.location.href;
+
+    // Used for if there is ad found
+    let isAdFound = false;
 
     //
     // Varables used for updater
@@ -138,9 +141,13 @@
 
         if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
 
+        var video = document.querySelector('video');
+        var videoPlayback = video.playbackRate;
+
         setInterval(() =>{
 
             const ad = [...document.querySelectorAll('.ad-showing')][0];
+            video = document.querySelector('video');
 
             //remove page ads
             if (window.location.href !== currentUrl) {
@@ -148,49 +155,85 @@
                 removePageAds();
             }
 
-            var video = document.querySelector('video');
-            var videoPlayback = video.playbackRate
             if (ad)
             {
+                isAdFound = true;
 
+                //
+                // Speed Skip Method
+                //
                 if (debugMessages) console.log("Remove Adblock Thing: Found Ad");
 
                 const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
                 const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
 
+                // Add a little bit of obfuscation when skipping to the end of the video.
+                if (video){
+
+                    video.playbackRate = 10;
+                    video.volume = 0;
+
+                    if (isNaN(video.duration)){
+                        var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
+                        video.currentTime = video.duration - randomNumber;
+                    }
+                    else{
+                        video.currentTime = 0;
+                    }
+
+                    skipBtn?.click();
+                    nonVid?.click();
+                }
+
+                //
+                // ad center method
+                //
+
                 const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                const blockAdButton = document.querySelector('[label="Block ad"]');
-                const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-
-                const hidebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
-
-                if (video) video.playbackRate = 10;
-                if (video) video.volume = 0;
-                if (video) video.currentTime = video.duration || 0;
-
-                if (video) skipBtn?.click();
-                if (video) nonVid?.click();
-
                 openAdCenterButton?.click();
 
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
+                const hidebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
 
-                if (popupContainer) {
-                  popupContainer.style.display = 'none';
-                  hidebackdrop.style.display = 'none';
-              }
+                if (popupContainer) popupContainer.style.display = 'none';
+                if (hidebackdrop) hidebackdrop.style.display = 'none';
 
+                const blockAdButton = document.querySelector('[label="Block ad"]');
                 blockAdButton?.click();
+
+                const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                 blockAdButtonConfirm?.click();
+
+                const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                 closeAdCenterButton?.click();
 
                 if (popupContainer) popupContainer.style.display = "block";
+                if (hidebackdrop) hidebackdrop.style.display = "block";
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
+
             } else {
-                if(video.playbackRate == 10){
-                    video.playbackRate = videoPlayback
+
+                //check for unreasonale playback speed
+                if(video.playbackRate == 10 && video){
+                    video.playbackRate = videoPlayback;
+                }
+
+                if (isAdFound){
+                    isAdFound = false;
+
+                    // this is right after the ad is skipped
+                    // fixes if you set the speed to 2x annd a ad plays it sets it back to the dfualt 1x
+
+                    //somthing bugged out default to 1x then
+                    if (videoPlayback == 10){
+                        videoPlayback = 1
+                    }
+
+                    if(video) video.playbackRate = videoPlayback;
+                }
+                else{
+                    if(video) videoPlayback = video.playbackRate;
                 }
             }
 
