@@ -174,8 +174,9 @@
                     video.volume = 0;
 
                     if (isNaN(video.duration)){
-                        var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
-                        video.currentTime = video.duration + randomNumber;
+                        //removed for now as of now cus it cusing problems
+                        //var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
+                        video.currentTime = video.duration;
                     }
                     else{
                         video.currentTime = 0;
