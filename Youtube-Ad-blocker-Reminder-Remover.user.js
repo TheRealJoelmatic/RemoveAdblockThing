@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.1
+// @version      3.2
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -23,7 +23,7 @@
     // Enable The Popup remover (pointless if you have the Undetected Adblocker)
     const removePopup = false;
 
-    // Checks for updates
+    // Checks for updates (Removes the popup)
     const updateCheck = true;
 
     // Enable debug messages into the console
@@ -175,11 +175,12 @@
 
                     if (isNaN(video.duration)){
                         var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
-                        video.currentTime = video.duration - randomNumber;
+                        video.currentTime = video.duration + randomNumber;
                     }
                     else{
                         video.currentTime = 0;
                     }
+                    video.play();
 
                     skipBtn?.click();
                     nonVid?.click();
@@ -207,8 +208,8 @@
                 const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                 closeAdCenterButton?.click();
 
-                if (popupContainer) popupContainer.style.display = "block";
-                if (hidebackdrop) hidebackdrop.style.display = "block";
+
+                if (video) video.play();
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
 
@@ -227,7 +228,13 @@
 
                     //somthing bugged out default to 1x then
                     if (videoPlayback == 10){
-                        videoPlayback = 1
+                        videoPlayback = 1;
+
+                        var _opupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
+                        const _idebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
+
+                        if (_opupContainer) _opupContainer.style.display = "block";
+                        if (_idebackdrop) _idebackdrop.style.display = "block";
                     }
 
                     if(video) video.playbackRate = videoPlayback;
@@ -241,7 +248,6 @@
 
         removePageAds();
     }
-
     //removes ads on the page (not video player ads)
     function removePageAds(){
 
@@ -340,4 +346,3 @@
         hasIgnoredUpdate = true;
     }
 })();
-
