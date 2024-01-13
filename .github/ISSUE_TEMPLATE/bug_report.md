@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Script version**
+What version is the script on eg 2.9 , 3.1 ect
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
