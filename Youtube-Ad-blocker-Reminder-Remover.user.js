@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.3
+// @version      3.4
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -141,16 +141,16 @@
     // undetected adblocker method
     function removeAds()
     {
-
         if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
-
-        var video = document.querySelector('video');
-        var videoPlayback = video.playbackRate;
 
         setInterval(() =>{
 
+            var videoPlayback;
+
+            var video = document.querySelector('video');
+            if(videoPlayback) videoPlayback = video.playbackRate;
             const ad = [...document.querySelectorAll('.ad-showing')][0];
-            video = document.querySelector('video');
+
 
             //remove page ads
             if (window.location.href !== currentUrl) {
@@ -230,7 +230,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video.playbackRate == 10 && video){
+                if(video?.playbackRate == 10 && video){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -278,6 +278,7 @@
             ytd-video-masthead-ad-advertiser-info-renderer,
             ytd-video-masthead-ad-primary-video-renderer,
             ytd-in-feed-ad-layout-renderer,
+            ytd-ad-slot-renderer,
             yt-about-this-ad-renderer,
             yt-mealbar-promo-renderer,
             ad-slot-renderer,
