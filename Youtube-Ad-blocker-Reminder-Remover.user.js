@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.2
+// @version      3.3
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -173,7 +173,7 @@
                     video.playbackRate = 10;
                     video.volume = 0;
 
-                    if (isNaN(video.duration)){
+                    if (!isNaN(video.duration)){
                         //removed for now as of now cus it cusing problems
                         //var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
                         video.currentTime = video.duration;
