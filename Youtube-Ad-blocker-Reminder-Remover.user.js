@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.2
+// @version      3.3
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -70,6 +70,9 @@
 
     // Used for if there is ad found
     let isAdFound = false;
+
+    //used to see how meny times we have loopped with a ad active
+    let adLoop = 0;
 
     //
     // Varables used for updater
@@ -158,14 +161,44 @@
             if (ad)
             {
                 isAdFound = true;
+                adLoop = adLoop + 1;
+
+                //
+                // ad center method
+                //
+
+                // If we tryied 10 times we can assume it wont work this time (This stops the wird pause/feaze on the ads)
+
+                if(adLoop < 10){
+                    const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
+                    openAdCenterButton?.click();
+
+                    var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
+                    const hidebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
+
+                    if (popupContainer) popupContainer.style.display = 'none';
+                    if (hidebackdrop) hidebackdrop.style.display = 'none';
+
+                    const blockAdButton = document.querySelector('[label="Block ad"]');
+                    blockAdButton?.click();
+
+                    const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
+                    blockAdButtonConfirm?.click();
+
+                    const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
+                    closeAdCenterButton?.click();
+                }
+                else{
+                    if (video) video.play();
+                }
 
                 //
                 // Speed Skip Method
                 //
                 if (debugMessages) console.log("Remove Adblock Thing: Found Ad");
 
-                const skipBtn = document.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button');
-                const nonVid = document.querySelector(".ytp-ad-skip-button-modern");
+
+                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
 
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
@@ -173,44 +206,24 @@
                     video.playbackRate = 10;
                     video.volume = 0;
 
-                    if (isNaN(video.duration)){
-                        //removed for now as of now cus it cusing problems
-                        //var randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
-                        video.currentTime = video.duration;
-                    }
-                    else{
-                        video.currentTime = 0;
-                    }
+                    // Iterate through the array of selectors
+                    skipButtons.forEach(selector => {
+                        // Select all elements matching the current selector
+                        const elements = document.querySelectorAll(selector);
+
+                        // Check if any elements were found
+                        if (elements.length > 0 && elements) {
+                          // Iterate through the selected elements and click
+                          elements.forEach(element => {
+                            element?.click();
+                          });
+                        }
+                    });
                     video.play();
 
-                    skipBtn?.click();
-                    nonVid?.click();
+                    let randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
+                    video.currentTime = video.duration + randomNumber || 0;
                 }
-
-                //
-                // ad center method
-                //
-
-                const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                openAdCenterButton?.click();
-
-                var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                const hidebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
-
-                if (popupContainer) popupContainer.style.display = 'none';
-                if (hidebackdrop) hidebackdrop.style.display = 'none';
-
-                const blockAdButton = document.querySelector('[label="Block ad"]');
-                blockAdButton?.click();
-
-                const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                blockAdButtonConfirm?.click();
-
-                const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                closeAdCenterButton?.click();
-
-
-                if (video) video.play();
 
                 if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
 
@@ -239,6 +252,9 @@
                     }
 
                     if(video) video.playbackRate = videoPlayback;
+
+                    //set ad loop back to the defualt
+                    adLoop = 0;
                 }
                 else{
                     if(video) videoPlayback = video.playbackRate;
@@ -249,6 +265,7 @@
 
         removePageAds();
     }
+
     //removes ads on the page (not video player ads)
     function removePageAds(){
 
@@ -257,14 +274,18 @@
 
         style.textContent = `
             ytd-action-companion-ad-renderer,
+            ytd-display-ad-renderer,
+            ytd-video-masthead-ad-advertiser-info-renderer,
+            ytd-video-masthead-ad-primary-video-renderer,
+            ytd-in-feed-ad-layout-renderer,
+            yt-about-this-ad-renderer,
+            yt-mealbar-promo-renderer,
+            ad-slot-renderer,
+            .ytd-video-masthead-ad-v3-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
             div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer,
             div#main-container.style-scope.ytd-promoted-video-renderer,
-            ytd-in-feed-ad-layout-renderer,
-            .ytd-video-masthead-ad-v3-renderer,
             div#player-ads.style-scope.ytd-watch-flexy,
-            yt-about-this-ad-renderer,
-            yt-mealbar-promo-renderer,
 
             #masthead-ad {
                 display: none !important;
