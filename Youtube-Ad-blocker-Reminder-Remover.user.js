@@ -145,7 +145,8 @@
         if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
 
         var video = document.querySelector('video');
-        var videoPlayback = video.playbackRate;
+        var videoPlayback = 1;
+        if(video) videoPlayback = video.playbackRate;
 
         setInterval(() =>{
 
@@ -212,7 +213,7 @@
                         const elements = document.querySelectorAll(selector);
 
                         // Check if any elements were found
-                        if (elements.length > 0 && elements) {
+                        if (elements && elements.length > 0) {
                           // Iterate through the selected elements and click
                           elements.forEach(element => {
                             element?.click();
@@ -230,7 +231,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video.playbackRate == 10 && video){
+                if(video && video.playbackRate == 10){
                     video.playbackRate = videoPlayback;
                 }
 
