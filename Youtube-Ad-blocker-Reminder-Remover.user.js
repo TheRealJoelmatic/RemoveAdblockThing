@@ -40,7 +40,7 @@
 
 
     //
-     // letables used for the Popup Remover
+     // Variables used for the Popup Remover
     //
     const keyEvent = new KeyboardEvent("keydown", {
       key: "k",
@@ -62,7 +62,7 @@
     let unpausedAfterSkip = 0;
 
     //
-     // letables used for adblock
+     // Variables used for adblock
     //
 
     // Store the initial URL
@@ -75,7 +75,7 @@
     let adLoop = 0;
 
     //
-     // letables used for updater
+     // Variables used for updater
     //
 
     let hasIgnoredUpdate = false;
