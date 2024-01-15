@@ -11,8 +11,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function()
- {
+(function () {
     //
     //      Config
     //
@@ -40,29 +39,21 @@
 
 
     //
-     // Variables used for the Popup Remover
+    // Variables used for the Popup Remover
     //
     const keyEvent = new KeyboardEvent("keydown", {
-      key: "k",
-      code: "KeyK",
-      keyCode: 75,
-      which: 75,
-      bubbles: true,
-      cancelable: true,
-      view: window
+        key: "k", code: "KeyK", keyCode: 75, which: 75, bubbles: true, cancelable: true, view: window
     });
 
-     const mouseEvent = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: window,
+    const mouseEvent = new MouseEvent("click", {
+        bubbles: true, cancelable: true, view: window,
     });
 
-     // This is used to check if the video has been unpaused already
+    // This is used to check if the video has been unpaused already
     let unpausedAfterSkip = 0;
 
     //
-     // Variables used for adblock
+    // Variables used for adblock
     //
 
     // Store the initial URL
@@ -71,11 +62,11 @@
     // Used for if there is ad found
     let isAdFound = false;
 
-     // used to see how many times we have looped with ad active
+    // used to see how many times we have looped with ad active
     let adLoop = 0;
 
     //
-     // Variables used for updater
+    // Variables used for updater
     //
 
     let hasIgnoredUpdate = false;
@@ -84,7 +75,7 @@
     // Setup
     //
 
-     // Set everything up here
+    // Set everything up here
     if (debugMessages) console.log("Remove Adblock Thing: Script started ");
 
     if (adblocker) removeAds();
@@ -132,9 +123,9 @@
 
         }, 1000);
     }
+
     // undetected adblocker method
-    function removeAds()
-    {
+    function removeAds() {
         if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
 
         setInterval(() => {
@@ -142,7 +133,7 @@
             let videoPlayback;
 
             const [video, ad] = document.querySelectorAll('video, .ad-showing');
-            if(videoPlayback) videoPlayback = video.playbackRate;
+            if (videoPlayback) videoPlayback = video.playbackRate;
 
             // remove page ads
             if (window.location.href !== currentUrl) {
@@ -181,7 +172,7 @@
                 if (debugMessages) console.log("Remove Adblock Thing: Found Ad");
 
 
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
+                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button'];
 
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video) {
@@ -229,7 +220,7 @@
                         if (_idebackdrop) _idebackdrop.style.display = "block";
                     }
 
-                    if(video) video.playbackRate = videoPlayback;
+                    if (video) video.playbackRate = videoPlayback;
 
                     // reset ad loop back
                     adLoop = 0;
@@ -242,7 +233,7 @@
     }
 
     //removes ads on the page (not video player ads)
-    function removePageAds(){
+    function removePageAds() {
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
         const style = document.createElement('style');
@@ -276,14 +267,13 @@
                     .filter(e => e.data?.targetId !== "engagement-panel-macro-markers-description-chapters")
                     .forEach(e => e.style.display = 'none');
             }
-         });
+        });
 
-         if (debugMessages) console.log("Remove Adblock Thing: Removed page ads (✔️)");
+        if (debugMessages) console.log("Remove Adblock Thing: Removed page ads (✔️)");
     }
 
     // Unpause the video Works most of the time
-    function unPauseVideo(video)
-    {
+    function unPauseVideo(video) {
         if (!video) return;
         if (video.paused) {
             // Simulate pressing the "k" key to unpause the video
@@ -297,47 +287,47 @@
     // Update check
     //
 
-    function checkForUpdate(){
+    function checkForUpdate() {
 
-        if (!(window.location.href.includes("youtube.com"))){
+        if (!(window.location.href.includes("youtube.com"))) {
             return;
         }
 
-        if (hasIgnoredUpdate){
+        if (hasIgnoredUpdate) {
             return;
         }
 
         const scriptUrl = 'https://raw.githubusercontent.com/TheRealJoelmatic/RemoveAdblockThing/main/Youtube-Ad-blocker-Reminder-Remover.user.js';
 
         fetch(scriptUrl)
-        .then(response => response.text())
-        .then(data => {
-            // Extract version from the script on GitHub
-            const match = data.match(/@version\s+(\d+\.\d+)/);
-            if (match) {
-                const githubVersion = parseFloat(match[1]);
-                const currentVersion = parseFloat(GM_info.script.version);
+            .then(response => response.text())
+            .then(data => {
+                // Extract version from the script on GitHub
+                const match = data.match(/@version\s+(\d+\.\d+)/);
+                if (match) {
+                    const githubVersion = parseFloat(match[1]);
+                    const currentVersion = parseFloat(GM_info.script.version);
 
-                if (githubVersion > currentVersion) {
-                    console.log('Remove Adblock Thing: A new version is available. Please update your script.');
+                    if (githubVersion > currentVersion) {
+                        console.log('Remove Adblock Thing: A new version is available. Please update your script.');
 
-                    const result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                        const result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
 
-                    if (result) {
-                        window.location.replace(scriptUrl);
+                        if (result) {
+                            window.location.replace(scriptUrl);
+                        }
+
+                    } else {
+                        console.log('Remove Adblock Thing: You have the latest version of the script.');
                     }
-
                 } else {
-                    console.log('Remove Adblock Thing: You have the latest version of the script.');
+                    console.error('Remove Adblock Thing: Unable to extract version from the GitHub script.');
                 }
-            } else {
-                console.error('Remove Adblock Thing: Unable to extract version from the GitHub script.');
-            }
-        })
-        .catch(error => {
-            hasIgnoredUpdate = true;
-            console.error('Remove Adblock Thing: Error checking for updates:', error);
-        });
+            })
+            .catch(error => {
+                hasIgnoredUpdate = true;
+                console.error('Remove Adblock Thing: Error checking for updates:', error);
+            });
         hasIgnoredUpdate = true;
     }
 })();
