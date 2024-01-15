@@ -167,7 +167,7 @@
                 // ad center method
                 //
 
-                // If we tryied 10 times we can assume it wont work this time (This stops the wird pause/feaze on the ads)
+                // If we tried 10 times we can assume it wont work this time (This stops the wird pause/feaze on the ads)
 
                 if(adLoop < 10){
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
