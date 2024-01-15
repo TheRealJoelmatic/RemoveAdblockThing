@@ -230,7 +230,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video?.playbackRate === 10 && video){
+                if(video?.playbackRate == 10 && video){
                     video.playbackRate = videoPlayback;
                 }
 
