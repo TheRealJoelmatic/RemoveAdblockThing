@@ -85,7 +85,7 @@
     //
 
     //Set everything up here
-     log("Script started")
+    log("Script started")
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
