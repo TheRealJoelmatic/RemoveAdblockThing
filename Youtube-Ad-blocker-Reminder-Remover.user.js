@@ -85,7 +85,7 @@
     //
 
     //Set everything up here
-    if (debugMessages) console.log("Remove Adblock Thing: Script started ");
+     log("Script started")
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
@@ -113,7 +113,7 @@
             }
 
             if (popup) {
-                if (debugMessages) console.log("Remove Adblock Thing: Popup detected, removing...");
+                log( "Popup detected, removing...")
 
                 if(popupButton) popupButton.click();
 
@@ -126,7 +126,7 @@
                   fullScreenButton.dispatchEvent(mouseEvent);
                 }, 500);
 
-                if (debugMessages) console.log("Remove Adblock Thing: Popup removed");
+                log( "Popup removed")
             }
 
             // Check if the video is paused after removing the popup
@@ -141,7 +141,7 @@
     // undetected adblocker method
     function removeAds()
     {
-        if (debugMessages) console.log("Remove Adblock Thing: removeAds()");
+       log('removeAds()')
 
         setInterval(() =>{
 
@@ -195,7 +195,7 @@
                 //
                 // Speed Skip Method
                 //
-                if (debugMessages) console.log("Remove Adblock Thing: Found Ad");
+                log( 'Found Ad')
 
 
                 const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
@@ -225,12 +225,12 @@
                     video.currentTime = video.duration + randomNumber || 0;
                 }
 
-                if (debugMessages) console.log("Remove Adblock Thing: skipped Ad (✔️)");
+                log('skipped Ad (✔️)')
 
             } else {
 
                 //check for unreasonale playback speed
-                if(video?.playbackRate == 10 && video){
+                if(video?.playbackRate === 10 && video){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -306,7 +306,7 @@
             }
          });
 
-         if (debugMessages) console.log("Remove Adblock Thing: Removed page ads (✔️)");
+        log("Removed page ads (✔️)")
     }
 
     // Unpause the video Works most of the time
@@ -317,7 +317,7 @@
             // Simulate pressing the "k" key to unpause the video
             document.dispatchEvent(keyEvent);
             unpausedAfterSkip = 0;
-            if (debugMessages) console.log("Remove Adblock Thing: Unpaused video using 'k' key");
+            log("Unpaused video using 'k' key")
         } else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
     }
 
@@ -347,7 +347,7 @@
                 const currentVersion = parseFloat(GM_info.script.version);
 
                 if (githubVersion > currentVersion) {
-                    console.log('Remove Adblock Thing: A new version is available. Please update your script.');
+                    log("Please update your script.")
 
                     var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
 
@@ -356,16 +356,46 @@
                     }
 
                 } else {
-                    console.log('Remove Adblock Thing: You have the latest version of the script.');
+                    log('You have the latest version of the script.')
                 }
             } else {
-                console.error('Remove Adblock Thing: Unable to extract version from the GitHub script.');
+                log("Unable to extract version from the GitHub script.", "e")
             }
         })
         .catch(error => {
             hasIgnoredUpdate = true;
-            console.error('Remove Adblock Thing: Error checking for updates:', error);
+            log("Error checking for updates:",  "e", error)
         });
         hasIgnoredUpdate = true;
+    }
+
+    function log(log, level = 'l', ...args) {
+        if (debugMessages) {
+            const prefix = 'Remove Adblock Thing:'
+            const message = `${prefix} ${log}`;
+            switch (level) {
+                case 'e':
+                case 'err':
+                case 'error':
+                    console.error(message, ...args);
+                    break;
+                case 'l':
+                case 'log':
+                    console.log(message, ...args);
+                    break;
+                case 'w':
+                case 'warn':
+                case 'warning':
+                    console.warn(message, ...args);
+                    break;
+                case 'i':
+                case 'info':
+                default:
+                    console.info(message, ...args);
+                    break
+
+            }
+        }
+
     }
 })();
