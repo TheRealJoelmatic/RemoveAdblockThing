@@ -113,7 +113,7 @@
             }
 
             if (popup) {
-                log( "Popup detected, removing...")
+                log("Popup detected, removing...")
 
                 if(popupButton) popupButton.click();
 
@@ -126,7 +126,7 @@
                   fullScreenButton.dispatchEvent(mouseEvent);
                 }, 500);
 
-                log( "Popup removed")
+                log("Popup removed")
             }
 
             // Check if the video is paused after removing the popup
@@ -141,7 +141,7 @@
     // undetected adblocker method
     function removeAds()
     {
-       log('removeAds()')
+        log('removeAds()')
 
         setInterval(() =>{
 
@@ -195,7 +195,7 @@
                 //
                 // Speed Skip Method
                 //
-                log( 'Found Ad')
+                log('Found Ad')
 
 
                 const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
@@ -364,38 +364,38 @@
         })
         .catch(error => {
             hasIgnoredUpdate = true;
-            log("Error checking for updates:",  "e", error)
+            log("Error checking for updates:", "e", error)
         });
         hasIgnoredUpdate = true;
     }
 
-    function log(log, level = 'l', ...args) {
-        if (debugMessages) {
-            const prefix = 'Remove Adblock Thing:'
-            const message = `${prefix} ${log}`;
-            switch (level) {
-                case 'e':
-                case 'err':
-                case 'error':
-                    console.error(message, ...args);
-                    break;
-                case 'l':
-                case 'log':
-                    console.log(message, ...args);
-                    break;
-                case 'w':
-                case 'warn':
-                case 'warning':
-                    console.warn(message, ...args);
-                    break;
-                case 'i':
-                case 'info':
-                default:
-                    console.info(message, ...args);
-                    break
+     function log(log, level = 'l', ...args) {
+         if (debugMessages) {
+             const prefix = 'Remove Adblock Thing:'
+             const message = `${prefix} ${log}`;
+             switch (level) {
+                 case 'e':
+                 case 'err':
+                 case 'error':
+                     console.error(message, ...args);
+                     break;
+                 case 'l':
+                 case 'log':
+                     console.log(message, ...args);
+                     break;
+                 case 'w':
+                 case 'warn':
+                 case 'warning':
+                     console.warn(message, ...args);
+                     break;
+                 case 'i':
+                 case 'info':
+                 default:
+                     console.info(message, ...args);
+                     break
 
-            }
-        }
+             }
+         }
 
-    }
+     }
 })();
