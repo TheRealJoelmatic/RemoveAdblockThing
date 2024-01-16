@@ -282,6 +282,7 @@
             yt-about-this-ad-renderer,
             yt-mealbar-promo-renderer,
             ad-slot-renderer,
+            tp-yt-iron-overlay-backdrop,
             .ytd-video-masthead-ad-v3-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
             div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer,
