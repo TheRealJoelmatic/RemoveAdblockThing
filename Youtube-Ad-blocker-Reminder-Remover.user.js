@@ -280,6 +280,7 @@
             ytd-in-feed-ad-layout-renderer,
             ytd-ad-slot-renderer,
             yt-about-this-ad-renderer,
+            ytd-engagement-panel-title-header-renderer,
             yt-mealbar-promo-renderer,
             ad-slot-renderer,
             tp-yt-iron-overlay-backdrop,
