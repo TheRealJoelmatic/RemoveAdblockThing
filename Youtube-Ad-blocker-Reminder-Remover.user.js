@@ -204,7 +204,7 @@
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
 
-                    video.playbackRate = 10;
+                    video.playbackRate = 16;
                     video.volume = 0;
 
                     // Iterate through the array of selectors
@@ -231,7 +231,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video?.playbackRate == 10 && video){
+                if(video?.playbackRate == 16 && video){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -242,7 +242,7 @@
                     // fixes if you set the speed to 2x annd a ad plays it sets it back to the dfualt 1x
 
                     //somthing bugged out default to 1x then
-                    if (videoPlayback == 10){
+                    if (videoPlayback == 16){
                         videoPlayback = 1;
 
                         var _opupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
