@@ -30,6 +30,8 @@
     const debugMessages = true;
 
     // Enable custom modal
+    // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
+    // When set to false, the default window popup will be used. And the library will not be loaded.
     const updateModal = {
         enable: true, // if true, replaces default window popup with a custom modal
         timer: 5000, // timer: number | false
@@ -397,6 +399,12 @@
                             });
                         };
 
+                        script.onerror = function () {
+                            var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                            if (result) {
+                                window.location.replace(scriptUrl);
+                            }
+                        }
                     } else {
                         var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
 
