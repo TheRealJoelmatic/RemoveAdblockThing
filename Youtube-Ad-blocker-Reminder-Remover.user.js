@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.5
+// @version      3.7
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -36,7 +36,8 @@
         enable: true, // if true, replaces default window popup with a custom modal
         timer: 5000, // timer: number | false
     };
-    
+
+
     //
     //      CODE
     //
@@ -45,29 +46,6 @@
     // feel free to create issues or pull requests in the GitHub repository.
     //
     // GITHUB: https://github.com/TheRealJoelmatic/RemoveAdblockThing
-
-
-    //
-    // Varables used for the Popup Remover
-    //
-    const keyEvent = new KeyboardEvent("keydown", {
-      key: "k",
-      code: "KeyK",
-      keyCode: 75,
-      which: 75,
-      bubbles: true,
-      cancelable: true,
-      view: window
-    });
-
-    let mouseEvent = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: window,
-    });
-
-    //This is used to check if the video has been unpaused already
-    let unpausedAfterSkip = 0;
 
     //
     // Varables used for adblock
@@ -83,7 +61,7 @@
     let adLoop = 0;
 
     //
-    // Varables used for updater
+    // Variables used for updater
     //
 
     let hasIgnoredUpdate = false;
@@ -93,7 +71,7 @@
     //
 
     //Set everything up here
-    log("Script started")
+    log("Script started");
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
@@ -102,17 +80,13 @@
     // Remove Them pesski popups
     function popupRemover() {
         setInterval(() => {
-
-            const fullScreenButton = document.querySelector(".ytp-fullscreen-button");
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
             const popupButton = document.getElementById("dismiss-button");
 
-            const video1 = document.querySelector("#movie_player > video.html5-main-video");
-            const video2 = document.querySelector("#movie_player > .html5-video-container > video");
+            var video = document.querySelector('video');
 
             const bodyStyle = document.body.style;
-
             bodyStyle.setProperty('overflow-y', 'auto', 'important');
 
             if (modalOverlay) {
@@ -121,42 +95,38 @@
             }
 
             if (popup) {
-                log("Popup detected, removing...")
+                log("Popup detected, removing...");
 
                 if(popupButton) popupButton.click();
 
                 popup.remove();
-                unpausedAfterSkip = 2;
-
-                fullScreenButton.dispatchEvent(mouseEvent);
+                video.play();
 
                 setTimeout(() => {
-                  fullScreenButton.dispatchEvent(mouseEvent);
+                    video.play();
                 }, 500);
 
-                log("Popup removed")
+                log("Popup removed");
             }
 
             // Check if the video is paused after removing the popup
-            if (!unpausedAfterSkip > 0) return;
+            if (!video.paused) return;
 
             // UnPause The Video
-            unPauseVideo(video1);
-            unPauseVideo(video2);
+            video.play();
 
         }, 1000);
     }
     // undetected adblocker method
     function removeAds()
     {
-        log('removeAds()')
+        log("removeAds()");
+
+        var videoPlayback = 1;
 
         setInterval(() =>{
 
-            var videoPlayback;
-
             var video = document.querySelector('video');
-            if(videoPlayback) videoPlayback = video.playbackRate;
             const ad = [...document.querySelectorAll('.ad-showing')][0];
 
 
@@ -175,14 +145,13 @@
                 // ad center method
                 //
 
-                // If we tryied 10 times we can assume it wont work this time (This stops the wird pause/feaze on the ads)
+                // If we tried 10 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
 
                 if(adLoop < 10){
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                     openAdCenterButton?.click();
 
                     var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-
                     if (popupContainer) popupContainer.style.display = 'none';
 
                     const blockAdButton = document.querySelector('[label="Block ad"]');
@@ -193,18 +162,20 @@
 
                     const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                     closeAdCenterButton?.click();
-
-                    const hidebackdrop = document.querySelectorAll("tp-yt-iron-overlay-backdrop");
-                    if (hidebackdrop) hidebackdrop.style.display = 'none';
                 }
                 else{
                     if (video) video.play();
                 }
 
+                //make sure this is no overlay at all
+                const hidebackdrop = document.querySelector("tp-yt-iron-overlay-backdrop");
+                if (hidebackdrop) hidebackdrop.style.display = 'none';
+                if (hidebackdrop) hidebackdrop.remove;
+
                 //
                 // Speed Skip Method
                 //
-                log('Found Ad')
+                log("Found Ad");
 
 
                 const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
@@ -221,7 +192,7 @@
                         const elements = document.querySelectorAll(selector);
 
                         // Check if any elements were found
-                        if (elements.length > 0 && elements) {
+                        if (elements && elements.length > 0) {
                           // Iterate through the selected elements and click
                           elements.forEach(element => {
                             element?.click();
@@ -234,12 +205,12 @@
                     video.currentTime = video.duration + randomNumber || 0;
                 }
 
-                log('skipped Ad (✔️)')
+                log("skipped Ad (✔️)");
 
             } else {
 
                 //check for unreasonale playback speed
-                if(video?.playbackRate == 10 && video){
+                if(video && video?.playbackRate == 10){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -247,20 +218,12 @@
                     isAdFound = false;
 
                     // this is right after the ad is skipped
-                    // fixes if you set the speed to 2x annd a ad plays it sets it back to the dfualt 1x
+                    // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
+
 
                     //somthing bugged out default to 1x then
-                    if (videoPlayback == 10){
-                        videoPlayback = 1;
-
-                        var _opupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                        const _idebackdrop = document.querySelector("body > tp-yt-iron-overlay-backdrop");
-
-                        if (_opupContainer) _opupContainer.style.display = "block";
-                        if (_idebackdrop) _idebackdrop.style.display = "block";
-                    }
-
-                    if(video) video.playbackRate = videoPlayback;
+                    if (videoPlayback == 10) videoPlayback = 1;
+                    if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
 
                     //set ad loop back to the defualt
                     adLoop = 0;
@@ -301,6 +264,7 @@
             div#main-container.style-scope.ytd-promoted-video-renderer,
             div#player-ads.style-scope.ytd-watch-flexy,
             ad-slot-renderer,
+            ytm-promoted-sparkles-web-renderer,
             masthead-ad,
 
             #masthead-ad {
@@ -321,19 +285,7 @@
             }
          });
 
-        log("Removed page ads (✔️)")
-    }
-
-    // Unpause the video Works most of the time
-    function unPauseVideo(video)
-    {
-        if (!video) return;
-        if (video.paused) {
-            // Simulate pressing the "k" key to unpause the video
-            document.dispatchEvent(keyEvent);
-            unpausedAfterSkip = 0;
-            log("Unpaused video using 'k' key")
-        } else if (unpausedAfterSkip > 0) unpausedAfterSkip--;
+        log("Removed page ads (✔️)");
     }
 
     //
@@ -357,75 +309,75 @@
         .then(data => {
             // Extract version from the script on GitHub
             const match = data.match(/@version\s+(\d+\.\d+)/);
-            if (match) {
-                const githubVersion = parseFloat(match[1]);
-                const currentVersion = parseFloat(GM_info.script.version);
+            if (!match) {
+                log("Unable to extract version from the GitHub script.", "e")
+                return;
+            }
 
-                if (githubVersion > currentVersion) {
-                    log("Please update your script.")
+            const githubVersion = parseFloat(match[1]);
+            const currentVersion = parseFloat(GM_info.script.version);
 
-                    if(updateModal.enable){
-                        // if a version is skipped, don't show the update message again until the next version
-                        if (parseFloat(localStorage.getItem('skipRemoveAdblockThingVersion')) === githubVersion) {
-                            return;
+            if (githubVersion <= currentVersion) {
+                log('You have the latest version of the script. ' + githubVersion + " : " + currentVersion);
+                return;
+            }
+
+            console.log('Remove Adblock Thing: A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion);
+
+            if(updateModal.enable){
+                // if a version is skipped, don't show the update message again until the next version
+                if (parseFloat(localStorage.getItem('skipRemoveAdblockThingVersion')) === githubVersion) {
+                    return;
+                }
+                // If enabled, include the SweetAlert2 library
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                document.head.appendChild(script);
+
+                const style = document.createElement('style');
+                style.textContent = '.swal2-container { z-index: 2400; }';
+                document.head.appendChild(style);
+
+                // Wait for SweetAlert to be fully loaded
+                script.onload = function () {
+
+                    Swal.fire({
+                        position: "top-end",
+                        backdrop: false,
+                        title: 'Remove Adblock Thing: New version is available.',
+                        text: 'Do you want to update?',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: 'Update',
+                        denyButtonText:'Skip',
+                        cancelButtonText: 'Close',
+                        timer: updateModal.timer ?? 5000,
+                        timerProgressBar: true,
+                        didOpen: (modal) => {
+                            modal.onmouseenter = Swal.stopTimer;
+                            modal.onmouseleave = Swal.resumeTimer;
                         }
-                        // If enabled, include the SweetAlert2 library
-                        const script = document.createElement('script');
-                        script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-                        document.head.appendChild(script);
-
-                        const style = document.createElement('style');
-                        style.textContent = '.swal2-container { z-index: 2400; }';
-                        document.head.appendChild(style);
-
-                        // Wait for SweetAlert to be fully loaded
-                        script.onload = function () {
-
-                            Swal.fire({
-                                position: "top-end",
-                                backdrop: false,
-                                title: 'Remove Adblock Thing: New version is available.',
-                                text: 'Do you want to update?',
-                                showCancelButton: true,
-                                showDenyButton: true,
-                                confirmButtonText: 'Update',
-                                denyButtonText:'Skip',
-                                cancelButtonText: 'Close',
-                                timer: updateModal.timer ?? 5000,
-                                timerProgressBar: true,
-                                didOpen: (modal) => {
-                                    modal.onmouseenter = Swal.stopTimer;
-                                    modal.onmouseleave = Swal.resumeTimer;
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.replace(scriptUrl);
-                                } else if(result.isDenied) {
-                                    localStorage.setItem('skipRemoveAdblockThingVersion', githubVersion);
-                                }
-                            });
-                        };
-
-                        script.onerror = function () {
-                            var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
-                            if (result) {
-                                window.location.replace(scriptUrl);
-                            }
-                        }
-                    } else {
-                        var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
-
-                        if (result) {
+                    }).then((result) => {
+                        if (result.isConfirmed) {
                             window.location.replace(scriptUrl);
+                        } else if(result.isDenied) {
+                            localStorage.setItem('skipRemoveAdblockThingVersion', githubVersion);
                         }
+                    });
+                };
+
+                script.onerror = function () {
+                    var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                    if (result) {
+                        window.location.replace(scriptUrl);
                     }
-
-
-                } else {
-                    log('You have the latest version of the script.')
                 }
             } else {
-                log("Unable to extract version from the GitHub script.", "e")
+                var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+
+                if (result) {
+                    window.location.replace(scriptUrl);
+                }
             }
         })
         .catch(error => {
@@ -435,33 +387,33 @@
         hasIgnoredUpdate = true;
     }
 
-     function log(log, level = 'l', ...args) {
-         if (debugMessages) {
-             const prefix = 'Remove Adblock Thing:'
-             const message = `${prefix} ${log}`;
-             switch (level) {
-                 case 'e':
-                 case 'err':
-                 case 'error':
-                     console.error(message, ...args);
-                     break;
-                 case 'l':
-                 case 'log':
-                     console.log(message, ...args);
-                     break;
-                 case 'w':
-                 case 'warn':
-                 case 'warning':
-                     console.warn(message, ...args);
-                     break;
-                 case 'i':
-                 case 'info':
-                 default:
-                     console.info(message, ...args);
-                     break
+    // Used for debug messages
+    function log(log, level = 'l', ...args) {
+        if (!debugMessages) return;
 
-             }
-         }
+        const prefix = 'Remove Adblock Thing:'
+        const message = `${prefix} ${log}`;
+        switch (level) {
+            case 'e':
+            case 'err':
+            case 'error':
+                console.error(message, ...args);
+                break;
+            case 'l':
+            case 'log':
+                console.log(message, ...args);
+                break;
+            case 'w':
+            case 'warn':
+            case 'warning':
+                console.warn(message, ...args);
+                break;
+            case 'i':
+            case 'info':
+            default:
+        console.info(message, ...args);
+        break
+    }
+    }
 
-     }
 })();
