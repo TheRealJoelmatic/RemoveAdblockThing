@@ -29,6 +29,14 @@
     // Enable debug messages into the console
     const debugMessages = true;
 
+    // Enable custom modal
+    // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
+    // When set to false, the default window popup will be used. And the library will not be loaded.
+    const updateModal = {
+        enable: true, // if true, replaces default window popup with a custom modal
+        timer: 5000, // timer: number | false
+    };
+    
     //
     //      CODE
     //
@@ -356,11 +364,62 @@
                 if (githubVersion > currentVersion) {
                     console.log('Remove Adblock Thing: A new version is available. Please update your script.');
 
-                    var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                    if(updateModal.enable){
+                        // if a version is skipped, don't show the update message again until the next version
+                        if (parseFloat(localStorage.getItem('skipRemoveAdblockThingVersion')) === githubVersion) {
+                            return;
+                        }
+                        // If enabled, include the SweetAlert2 library
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                        document.head.appendChild(script);
 
-                    if (result) {
-                        window.location.replace(scriptUrl);
+                        const style = document.createElement('style');
+                        style.textContent = '.swal2-container { z-index: 2400; }';
+                        document.head.appendChild(style);
+
+                        // Wait for SweetAlert to be fully loaded
+                        script.onload = function () {
+
+                            Swal.fire({
+                                position: "top-end",
+                                backdrop: false,
+                                title: 'Remove Adblock Thing: New version is available.',
+                                text: 'Do you want to update?',
+                                showCancelButton: true,
+                                showDenyButton: true,
+                                confirmButtonText: 'Update',
+                                denyButtonText:'Skip',
+                                cancelButtonText: 'Close',
+                                timer: updateModal.timer ?? 5000,
+                                timerProgressBar: true,
+                                didOpen: (modal) => {
+                                    modal.onmouseenter = Swal.stopTimer;
+                                    modal.onmouseleave = Swal.resumeTimer;
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.replace(scriptUrl);
+                                } else if(result.isDenied) {
+                                    localStorage.setItem('skipRemoveAdblockThingVersion', githubVersion);
+                                }
+                            });
+                        };
+
+                        script.onerror = function () {
+                            var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                            if (result) {
+                                window.location.replace(scriptUrl);
+                            }
+                        }
+                    } else {
+                        var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+
+                        if (result) {
+                            window.location.replace(scriptUrl);
+                        }
                     }
+
 
                 } else {
                     console.log('Remove Adblock Thing: You have the latest version of the script.');
