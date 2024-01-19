@@ -29,6 +29,9 @@
     // Enable debug messages into the console
     const debugMessages = true;
 
+	// Enable the bitrate popup remover
+	const removeBitrate = true;
+
     //
     //      CODE
     //
@@ -90,6 +93,7 @@
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
     if (updateCheck) checkForUpdate();
+	if (removeBitrate) removeBitratePopup();
 
     // Remove Them pesski popups
     function popupRemover() {
@@ -315,6 +319,20 @@
 
          if (debugMessages) console.log("Remove Adblock Thing: Removed page ads (✔️)");
     }
+
+	// Removes the bitrate popup
+	function removeBitratePopup(){
+		setInterval(function(){
+			var elements = document.getElementsByClassName("style-scope ytd-popup-container");
+			while(elements.length > 0){
+				elements[0].parentNode.removeChild(elements[0]);
+			}
+			var elements = document.getElementsByClassName("style-scope ytd-menu-popup-renderer");
+			while(elements.length > 0){
+				elements[0].parentNode.removeChild(elements[0]);
+			}
+		}, 500);
+	}
 
     // Unpause the video Works most of the time
     function unPauseVideo(video)
