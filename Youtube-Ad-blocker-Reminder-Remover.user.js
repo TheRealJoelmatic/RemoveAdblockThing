@@ -170,7 +170,7 @@
                 //make sure this is no overlay at all
                 const hidebackdrop = document.querySelector("tp-yt-iron-overlay-backdrop");
                 if (hidebackdrop) hidebackdrop.style.display = 'none';
-                if (hidebackdrop) hidebackdrop.remove();
+                if (hidebackdrop) hidebackdrop.remove;
 
                 //
                 // Speed Skip Method
@@ -265,6 +265,7 @@
             div#player-ads.style-scope.ytd-watch-flexy,
             ad-slot-renderer,
             ytm-promoted-sparkles-web-renderer,
+            tp-yt-iron-overlay-backdrop,
             masthead-ad,
 
             #masthead-ad {
