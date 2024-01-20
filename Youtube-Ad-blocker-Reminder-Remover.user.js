@@ -260,6 +260,7 @@
             div#player-ads.style-scope.ytd-watch-flexy,
             ad-slot-renderer,
             ytm-promoted-sparkles-web-renderer,
+            tp-yt-iron-overlay-backdrop,
             masthead-ad,
             tp-yt-iron-overlay-backdrop,
 
