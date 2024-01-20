@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      3.7
+// @version      3.8
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -167,10 +167,6 @@
                     if (video) video.play();
                 }
 
-                //make sure this is no overlay at all
-                const hidebackdrop = document.querySelector("tp-yt-iron-overlay-backdrop");
-                if (hidebackdrop) hidebackdrop.style.display = 'none';
-                if (hidebackdrop) hidebackdrop.remove;
 
                 //
                 // Speed Skip Method
@@ -266,6 +262,7 @@
             ad-slot-renderer,
             ytm-promoted-sparkles-web-renderer,
             masthead-ad,
+            tp-yt-iron-overlay-backdrop,
 
             #masthead-ad {
                 display: none !important;
