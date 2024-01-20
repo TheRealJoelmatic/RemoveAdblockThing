@@ -179,7 +179,7 @@
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
 
-                    video.playbackRate = 10;
+                    video.playbackRate = 16;
                     video.volume = 0;
 
                     // Iterate through the array of selectors
@@ -206,7 +206,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video && video?.playbackRate == 10){
+                if(video && video?.playbackRate == 16){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -216,9 +216,8 @@
                     // this is right after the ad is skipped
                     // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
 
-
                     //somthing bugged out default to 1x then
-                    if (videoPlayback == 10) videoPlayback = 1;
+                    if (videoPlayback == 16) videoPlayback = 1;
                     if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
 
                     //set ad loop back to the defualt
