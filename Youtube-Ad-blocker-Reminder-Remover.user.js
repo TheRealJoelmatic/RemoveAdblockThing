@@ -100,20 +100,14 @@
                 if(popupButton) popupButton.click();
 
                 popup.remove();
-                video.play();
+                if (video.paused) video.play();
 
                 setTimeout(() => {
-                    video.play();
+                    if (video.paused) video.play();
                 }, 500);
 
                 log("Popup removed");
             }
-
-            // Check if the video is paused after removing the popup
-            if (!video.paused) return;
-
-            // UnPause The Video
-            video.play();
 
         }, 1000);
     }
