@@ -122,7 +122,7 @@
         var videoPlayback = 1;
 
         const removeAdsFunc = () => {
-            requestIdleCallback(adblockerFunc, {timeout: 50});
+            requestIdleCallback(removeAdsFunc, {timeout: 50});
 
             var video = document.querySelector('video');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
