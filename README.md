@@ -64,3 +64,13 @@ If you have any suggestions, bug reports, or want to contribute to this userscri
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Star History
+
+<a href="https://star-history.com/#TheRealJoelmatic/RemoveAdblockThing&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=TheRealJoelmatic/RemoveAdblockThing&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=TheRealJoelmatic/RemoveAdblockThing&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=TheRealJoelmatic/RemoveAdblockThing&type=Date" />
+  </picture>
+</a>
