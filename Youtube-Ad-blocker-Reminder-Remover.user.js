@@ -150,7 +150,7 @@
                     openAdCenterButton?.click();
 
                     var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                    if (popupContainer) popupContainer.style.display = 'none';
+                    if (popupContainer) popupContainer.parentElement.style.display = 'none';
 
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.click();
