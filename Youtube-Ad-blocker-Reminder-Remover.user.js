@@ -100,14 +100,18 @@
                 if(popupButton) popupButton.click();
 
                 popup.remove();
-                if (video.paused) video.play();
+                video.play();
 
                 setTimeout(() => {
-                    if (video.paused) video.play();
+                    video.play();
                 }, 500);
 
                 log("Popup removed");
             }
+            // Check if the video is paused after removing the popup
+            if (!video.paused) return;
+            // UnPause The Video
+            video.play();
 
         }, 1000);
     }
@@ -146,7 +150,7 @@
                     openAdCenterButton?.click();
 
                     var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                    if (popupContainer) popupContainer.style.display = 'none';
+                    if (popupContainer) popupContainer.parentElement.style.display = 'none';
 
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.click();
@@ -168,12 +172,12 @@
                 log("Found Ad");
 
 
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button' ];
+                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot' ];
 
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
 
-                    video.playbackRate = 16;
+                    video.playbackRate = 10;
                     video.volume = 0;
 
                     // Iterate through the array of selectors
@@ -200,7 +204,7 @@
             } else {
 
                 //check for unreasonale playback speed
-                if(video && video?.playbackRate == 16){
+                if(video && video?.playbackRate == 10){
                     video.playbackRate = videoPlayback;
                 }
 
@@ -210,8 +214,9 @@
                     // this is right after the ad is skipped
                     // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
 
+
                     //somthing bugged out default to 1x then
-                    if (videoPlayback == 16) videoPlayback = 1;
+                    if (videoPlayback == 10) videoPlayback = 1;
                     if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
 
                     //set ad loop back to the defualt
@@ -254,8 +259,8 @@
             div#player-ads.style-scope.ytd-watch-flexy,
             ad-slot-renderer,
             ytm-promoted-sparkles-web-renderer,
-            tp-yt-iron-overlay-backdrop,
             masthead-ad,
+            tp-yt-iron-overlay-backdrop,
 
             #masthead-ad {
                 display: none !important;
