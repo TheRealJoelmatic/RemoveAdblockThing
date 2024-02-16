@@ -149,9 +149,6 @@
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                     openAdCenterButton?.click();
 
-                    var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                    if (popupContainer) popupContainer.parentElement.style.display = 'none';
-
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.click();
 
@@ -165,6 +162,11 @@
                     if (video) video.play();
                 }
 
+              var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
+              if (popupContainer)
+                // popupContainer persists, lets not spam
+                if (popupContainer.style.display == "")
+                  popupContainer.style.display = 'none';
 
                 //
                 // Speed Skip Method
