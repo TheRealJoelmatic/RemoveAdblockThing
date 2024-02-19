@@ -9,6 +9,7 @@
 // @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
+// @require      https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 // ==/UserScript==
 
 (function()
@@ -79,7 +80,8 @@
 
     // Remove Them pesski popups
     function popupRemover() {
-        setInterval(() => {
+        const removePopupLoop = () => {
+            requestIdleCallback(removePopupLoop, {timeout: 500});
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
             const popupButton = document.getElementById("dismiss-button");
@@ -113,7 +115,8 @@
             // UnPause The Video
             video.play();
 
-        }, 1000);
+        }
+        requestIdleCallback(removePopupLoop);
     }
     // undetected adblocker method
     function removeAds()
@@ -122,7 +125,8 @@
 
         var videoPlayback = 1;
 
-        setInterval(() =>{
+        const removeAdsFunc = () => {
+            requestIdleCallback(removeAdsFunc, {timeout: 50});
 
             var video = document.querySelector('video');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
@@ -229,7 +233,8 @@
                 }
             }
 
-        }, 50)
+        }
+        requestIdleCallback(removeAdsFunc);
 
         removePageAds();
     }
