@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      4.0
+// @version      5.0
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -61,6 +61,35 @@
     let adLoop = 0;
 
     //
+    // Button click
+    //
+
+    const event = new PointerEvent('click', {
+        pointerId: 1,
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        detail: 1,
+        screenX: 0,
+        screenY: 0,
+        clientX: 0,
+        clientY: 0,
+        ctrlKey: false,
+        altKey: false,
+        shiftKey: false,
+        metaKey: false,
+        button: 0,
+        buttons: 1,
+        width: 1,
+        height: 1,
+        pressure: 0.5,
+        tiltX: 0,
+        tiltY: 0,
+        pointerType: 'mouse',
+        isPrimary: true
+    });
+
+    //
     // Variables used for updater
     //
 
@@ -72,6 +101,7 @@
 
     //Set everything up here
     log("Script started");
+    
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
@@ -145,22 +175,22 @@
 
                 // If we tried 10 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
 
-                if(adLoop < 10){
+                //if(adLoop < 10){
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                    openAdCenterButton?.click();
-
+                    openAdCenterButton?.dispatchEvent(event);
+ 
                     const blockAdButton = document.querySelector('[label="Block ad"]');
-                    blockAdButton?.click();
+                    blockAdButton?.dispatchEvent(event);
 
                     const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                    blockAdButtonConfirm?.click();
+                    blockAdButtonConfirm?.dispatchEvent(event);
 
                     const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                    closeAdCenterButton?.click();
-                }
-                else{
-                    if (video) video.play();
-                }
+                    closeAdCenterButton?.dispatchEvent(event);
+                //}
+                //else{
+                //    if (video) video.play();
+                //}
 
               var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
               if (popupContainer)
@@ -179,8 +209,9 @@
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
 
-                    video.playbackRate = 10;
-                    video.volume = 0;
+                    //Seems to beh patched and gets dectected
+                    //video.playbackRate = 10;
+                    //video.volume = 0;
 
                     // Iterate through the array of selectors
                     skipButtons.forEach(selector => {
@@ -191,7 +222,7 @@
                         if (elements && elements.length > 0) {
                           // Iterate through the selected elements and click
                           elements.forEach(element => {
-                            element?.click();
+                            element?.dispatchEvent(event);
                           });
                         }
                     });
