@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.0
+// @version      5.1
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -101,7 +101,6 @@
 
     //Set everything up here
     log("Script started");
-    
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
@@ -169,34 +168,47 @@
                 isAdFound = true;
                 adLoop = adLoop + 1;
 
+                log("adLoop: " + adLoop);
+
+                // If we tried 15 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
+
+
+                if(adLoop >= 2){
+                    //set the add to half to press the skip button
+                    if(video.currentTime < (video.duration / 2)){
+                        let randomNumber = Math.floor(Math.random() * 2) + 1;
+                        video.currentTime = (video.duration / 2) + randomNumber || 0;
+
+                        video.playbackRate = 10 - randomNumber;
+                    }
+                }
+
                 //
                 // ad center method
                 //
-
-                // If we tried 10 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
-
-                //if(adLoop < 10){
+                //if(adLoop >= 15){
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                     openAdCenterButton?.dispatchEvent(event);
- 
+    
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.dispatchEvent(event);
-
+    
                     const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                     blockAdButtonConfirm?.dispatchEvent(event);
-
+    
                     const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                     closeAdCenterButton?.dispatchEvent(event);
                 //}
-                //else{
-                //    if (video) video.play();
-                //}
 
-              var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-              if (popupContainer)
-                // popupContainer persists, lets not spam
-                if (popupContainer.style.display == "")
-                  popupContainer.style.display = 'none';
+                //if (video) video.play();
+
+
+                var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
+                if (popupContainer){
+                    // popupContainer persists, lets not spam
+                    if (popupContainer.style.display == "")
+                        popupContainer.style.display = 'none';
+                }
 
                 //
                 // Speed Skip Method
@@ -204,14 +216,14 @@
                 log("Found Ad");
 
 
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot' ];
+                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot', 'ytp-skip-ad-button', 'skip-button' ];
 
                 // Add a little bit of obfuscation when skipping to the end of the video.
                 if (video){
 
                     //Seems to beh patched and gets dectected
                     //video.playbackRate = 10;
-                    //video.volume = 0;
+                    video.volume = 0;
 
                     // Iterate through the array of selectors
                     skipButtons.forEach(selector => {
@@ -228,8 +240,7 @@
                     });
                     video.play();
 
-                    let randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
-                    video.currentTime = video.duration + randomNumber || 0;
+                    //Seems to beh patched and gets dectected
                 }
 
                 log("skipped Ad (✔️)");
