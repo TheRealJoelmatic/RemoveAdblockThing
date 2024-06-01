@@ -355,8 +355,7 @@
                 log('You have the latest version of the script. ' + githubVersion + " : " + currentVersion);
                 return;
             }
-
-            //console.log('Remove Adblock Thing: A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion);
+            
             log('A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion, "warning")
 
             if(updateModal.enable){
