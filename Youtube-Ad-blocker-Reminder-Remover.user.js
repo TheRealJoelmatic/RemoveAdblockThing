@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.1
+// @version      5.2
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -108,6 +108,7 @@
 
     // Remove Them pesski popups
     function popupRemover() {
+
         setInterval(() => {
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
@@ -147,6 +148,7 @@
     // undetected adblocker method
     function removeAds()
     {
+
         log("removeAds()");
 
         var videoPlayback = 1;
@@ -173,34 +175,38 @@
                 // If we tried 15 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
 
 
-                if(adLoop >= 2){
+                if(adLoop >= 5){
                     //set the add to half to press the skip button
-                    if(video.currentTime < (video.duration / 2)){
-                        let randomNumber = Math.floor(Math.random() * 2) + 1;
-                        video.currentTime = (video.duration / 2) + randomNumber || 0;
-
-                        video.playbackRate = 10 - randomNumber;
+                    if (video.currentTime != undefined || video.currentTime > 0.10){
+                        if(video.currentTime < (video.duration / 2)){
+                            let randomNumber = Math.floor(Math.random() * 2) + 1;
+                            video.currentTime = (video.duration / 2) + randomNumber || 0;
+                            video.playbackRate = 10 - randomNumber;
+                        }
                     }
                 }
 
                 //
                 // ad center method
                 //
-                //if(adLoop >= 15){
+
+                if(adLoop <= 5){
+                    if (video) video.pause();
+
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                     openAdCenterButton?.dispatchEvent(event);
-    
+        
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.dispatchEvent(event);
-    
+        
                     const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                     blockAdButtonConfirm?.dispatchEvent(event);
-    
+        
                     const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                     closeAdCenterButton?.dispatchEvent(event);
-                //}
 
-                //if (video) video.play();
+                    if (video) video.play();
+                }
 
 
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
@@ -216,9 +222,25 @@
                 log("Found Ad");
 
 
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot', 'ytp-skip-ad-button', 'skip-button' ];
+                //This is beacuse youtube keeps changing the class of the skip button for what ever reason
+                let skipButtons = [
+                'ytp-ad-skip-button-container',
+                'ytp-ad-skip-button-modern',
+                '.videoAdUiSkipButton',
+                '.ytp-ad-skip-button',
+                '.ytp-ad-skip-button-modern',
+                '.ytp-ad-skip-button',
+                '.ytp-ad-skip-button-slot',
+                'ytp-skip-ad-button',
+                'skip-button'
+                ];
+                const elementsWithSkipButton = document.querySelectorAll('[class*="skip-button"]');
 
-                // Add a little bit of obfuscation when skipping to the end of the video.
+                const classesFromElements = Array.from(elementsWithSkipButton).map(element => element.className.split(' ')).flat();
+                const uniqueClassesFromElements = [...new Set(classesFromElements)];
+                
+                skipButtons = [...new Set([...skipButtons, ...uniqueClassesFromElements])];
+
                 if (video){
 
                     //Seems to beh patched and gets dectected
