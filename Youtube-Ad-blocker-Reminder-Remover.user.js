@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.1
+// @version      5.2
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -11,10 +11,9 @@
 // @grant        none
 // ==/UserScript==
 
-(function()
- {
+(function() {
     //
-    //      Config
+    // Config
     //
 
     // Enable The Undetected Adblocker
@@ -39,7 +38,7 @@
 
 
     //
-    //      CODE
+    // CODE
     //
     // If you have any suggestions, bug reports,
     // or want to contribute to this userscript,
@@ -48,28 +47,23 @@
     // GITHUB: https://github.com/TheRealJoelmatic/RemoveAdblockThing
 
     //
-    // Varables used for adblock
+    // Variables used for adblock
     //
 
     // Store the initial URL
     let currentUrl = window.location.href;
 
-    // Used for if there is ad found
+    // Used for if there is an ad found
     let isAdFound = false;
 
-    //used to see how meny times we have loopped with a ad active
+    // Used to see how many times we have looped with an ad active
     let adLoop = 0;
 
     //
     // Button click
     //
 
-    const event = new PointerEvent('click', {
-        pointerId: 1,
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        detail: 1,
+    const pointerEvent = {
         screenX: 0,
         screenY: 0,
         clientX: 0,
@@ -87,27 +81,27 @@
         tiltY: 0,
         pointerType: 'mouse',
         isPrimary: true
+    };
+    
+    let hasIgnoredUpdate = false;
+    
+    log("Script started");
+    
+    const features = {
+        adblocker: removeAds,
+        removePopup: popupRemover,
+        updateCheck: checkForUpdate
+    };
+    
+    Object.keys(features).forEach(feature => {
+        if (this[feature]) features[feature]();
     });
 
-    //
-    // Variables used for updater
-    //
-
-    let hasIgnoredUpdate = false;
-
-    //
-    // Setup
-    //
-
-    //Set everything up here
-    log("Script started");
-
-    if (adblocker) removeAds();
-    if (removePopup) popupRemover();
-    if (updateCheck) checkForUpdate();
-
-    // Remove Them pesski popups
     function popupRemover() {
+        /*
+        This function removes the popup that appears when the video is paused, asking the user to disable their adblocker.
+        */
+
         setInterval(() => {
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
@@ -135,46 +129,44 @@
                     video.play();
                 }, 500);
 
-                log("Popup removed");
+                log("Popup removed!", "log");
             }
             // Check if the video is paused after removing the popup
             if (!video.paused) return;
-            // UnPause The Video
+            // Unpause the video
             video.play();
 
         }, 1000);
     }
-    // undetected adblocker method
-    function removeAds()
-    {
-        log("removeAds()");
+
+    function removeAds() {
+        /*
+        This function removes ads from the video player by increasing the playback speed upon an ad to skip it.
+        */
+
+        log("Removing ads!");
 
         var videoPlayback = 1;
 
-        setInterval(() =>{
+        setInterval(() => {
 
             var video = document.querySelector('video');
             const ad = [...document.querySelectorAll('.ad-showing')][0];
 
-
-            //remove page ads
+            // Remove page ads
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
                 removePageAds();
             }
 
-            if (ad)
-            {
+            if (ad) {
                 isAdFound = true;
                 adLoop = adLoop + 1;
-
-                log("adLoop: " + adLoop);
+                if (debugMessages){log("Ad loop: " + adLoop + " | Video time: " + video.currentTime + " | Video duration: " + video.duration);}
 
                 // If we tried 15 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
-
-
                 if(adLoop >= 2){
-                    //set the add to half to press the skip button
+                    // Set the ad to half to press the skip button
                     if(video.currentTime < (video.duration / 2)){
                         let randomNumber = Math.floor(Math.random() * 2) + 1;
                         video.currentTime = (video.duration / 2) + randomNumber || 0;
@@ -184,28 +176,27 @@
                 }
 
                 //
-                // ad center method
+                // Ad center method
                 //
                 //if(adLoop >= 15){
-                    const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                    openAdCenterButton?.dispatchEvent(event);
-    
-                    const blockAdButton = document.querySelector('[label="Block ad"]');
-                    blockAdButton?.dispatchEvent(event);
-    
-                    const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                    blockAdButtonConfirm?.dispatchEvent(event);
-    
-                    const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                    closeAdCenterButton?.dispatchEvent(event);
+                const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
+                openAdCenterButton?.dispatchEvent(event);
+
+                const blockAdButton = document.querySelector('[label="Block ad"]');
+                blockAdButton?.dispatchEvent(event);
+
+                const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
+                blockAdButtonConfirm?.dispatchEvent(event);
+
+                const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
+                closeAdCenterButton?.dispatchEvent(event);
                 //}
 
                 //if (video) video.play();
 
-
                 var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
                 if (popupContainer){
-                    // popupContainer persists, lets not spam
+                    // Popup container persists, let's not spam
                     if (popupContainer.style.display == "")
                         popupContainer.style.display = 'none';
                 }
@@ -213,16 +204,15 @@
                 //
                 // Speed Skip Method
                 //
-                log("Found Ad");
+                log("Found Ad!");
 
-
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot', 'ytp-skip-ad-button', 'skip-button' ];
+                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot', 'ytp-skip-ad-button', 'skip-button'];
 
                 // Add a little bit of obfuscation when skipping to the end of the video.
-                if (video){
+                if (video) {
 
-                    //Seems to beh patched and gets dectected
-                    //video.playbackRate = 10;
+                    // Seems to be patched and gets detected
+                    // video.playbackRate = 10;
                     video.volume = 0;
 
                     // Iterate through the array of selectors
@@ -232,22 +222,22 @@
 
                         // Check if any elements were found
                         if (elements && elements.length > 0) {
-                          // Iterate through the selected elements and click
-                          elements.forEach(element => {
-                            element?.dispatchEvent(event);
-                          });
+                            // Iterate through the selected elements and click
+                            elements.forEach(element => {
+                                element?.dispatchEvent(event);
+                            });
                         }
                     });
                     video.play();
 
-                    //Seems to beh patched and gets dectected
+                    // Seems to be patched and gets detected
                 }
 
-                log("skipped Ad (✔️)");
+                log("Skipped Ad!", "log");
 
             } else {
 
-                //check for unreasonale playback speed
+                // Check for unreasonable playback speed
                 if(video && video?.playbackRate == 10){
                     video.playbackRate = videoPlayback;
                 }
@@ -255,15 +245,14 @@
                 if (isAdFound){
                     isAdFound = false;
 
-                    // this is right after the ad is skipped
-                    // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
+                    // This is right after the ad is skipped
+                    // Fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
 
-
-                    //somthing bugged out default to 1x then
+                    // Something bugged out, default to 1x then
                     if (videoPlayback == 10) videoPlayback = 1;
                     if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
 
-                    //set ad loop back to the defualt
+                    // Set ad loop back to the default
                     adLoop = 0;
                 }
                 else{
@@ -276,8 +265,10 @@
         removePageAds();
     }
 
-    //removes ads on the page (not video player ads)
-    function removePageAds(){
+    function removePageAds() {
+        /*
+        This function removes ads on the page (not video player ads).
+        */
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
         const style = document.createElement('style');
@@ -314,27 +305,31 @@
         document.head.appendChild(style);
 
         sponsor?.forEach((element) => {
-             if (element.getAttribute("id") === "rendering-content") {
+            if (element.getAttribute("id") === "rendering-content") {
                 element.childNodes?.forEach((childElement) => {
-                  if (childElement?.data.targetId && childElement?.data.targetId !=="engagement-panel-macro-markers-description-chapters"){
-                      //Skipping the Chapters section
+                    if (childElement?.data.targetId && childElement?.data.targetId !=="engagement-panel-macro-markers-description-chapters"){
+                        // Skipping the Chapters section
                         element.style.display = 'none';
                     }
-                   });
+                });
             }
-         });
+        });
 
-        log("Removed page ads (✔️)");
+        log("Removed page ads!", "log");
     }
 
     //
     // Update check
     //
 
-    function checkForUpdate(){
+    function checkForUpdate() {
+        /* 
+        This function checks for updates on the GitHub repository.
+        If a new version is available, it will prompt the user to update the script.
+        */
 
         if (window.top !== window.self && !(window.location.href.includes("youtube.com"))){
-            return;
+            return; 
         }
 
         if (hasIgnoredUpdate){
@@ -349,7 +344,7 @@
             // Extract version from the script on GitHub
             const match = data.match(/@version\s+(\d+\.\d+)/);
             if (!match) {
-                log("Unable to extract version from the GitHub script.", "e")
+                log("Unable to extract version from the GitHub script!", "error")
                 return;
             }
 
@@ -361,10 +356,11 @@
                 return;
             }
 
-            console.log('Remove Adblock Thing: A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion);
+            //console.log('Remove Adblock Thing: A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion);
+            log('A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion, "warning")
 
             if(updateModal.enable){
-                // if a version is skipped, don't show the update message again until the next version
+                // If a version is skipped, don't show the update message again until the next version
                 if (parseFloat(localStorage.getItem('skipRemoveAdblockThingVersion')) === githubVersion) {
                     return;
                 }
@@ -421,38 +417,33 @@
         })
         .catch(error => {
             hasIgnoredUpdate = true;
-            log("Error checking for updates:", "e", error)
+            log("Error checking for updates:", "error", error)
         });
         hasIgnoredUpdate = true;
     }
 
-    // Used for debug messages
-    function log(log, level = 'l', ...args) {
-        if (!debugMessages) return;
+    function log(log, level, ...args) {
+        /* 
+        This function is used for debug messages to the console.
 
-        const prefix = 'Remove Adblock Thing:'
+        USAGE: log('message', 'level', ...args)
+        LEVELS: 'log', 'warning', 'error'
+        */
+
+        const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
         switch (level) {
-            case 'e':
-            case 'err':
             case 'error':
-                console.error(message, ...args);
+                console.error(`❌ ${message}`, ...args);
                 break;
-            case 'l':
             case 'log':
-                console.log(message, ...args);
+                console.log(`✅ ${message}`, ...args);
                 break;
-            case 'w':
-            case 'warn':
             case 'warning':
-                console.warn(message, ...args);
+                console.warn(`⚠️ ${message}`, ...args);
                 break;
-            case 'i':
-            case 'info':
             default:
-        console.info(message, ...args);
-        break
+                console.info(`ℹ️ ${message}`, ...args);
+        }        
     }
-    }
-
 })();
