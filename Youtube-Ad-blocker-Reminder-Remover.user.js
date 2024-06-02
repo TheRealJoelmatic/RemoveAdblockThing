@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.2
+// @version      5.3
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -180,7 +180,7 @@
                     if (video.currentTime != undefined || video.currentTime > 0.10){
                         if(video.currentTime < (video.duration / 2)){
                             let randomNumber = Math.floor(Math.random() * 2) + 1;
-                            video.currentTime = (video.duration / 2) + randomNumber || 0;
+                            //video.currentTime = (video.duration / 2) + randomNumber || 0;
                             video.playbackRate = 10 - randomNumber;
                         }
                     }
@@ -195,13 +195,13 @@
 
                     const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
                     openAdCenterButton?.dispatchEvent(event);
-        
+
                     const blockAdButton = document.querySelector('[label="Block ad"]');
                     blockAdButton?.dispatchEvent(event);
-        
+
                     const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
                     blockAdButtonConfirm?.dispatchEvent(event);
-        
+
                     const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
                     closeAdCenterButton?.dispatchEvent(event);
 
