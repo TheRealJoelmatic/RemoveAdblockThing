@@ -11,7 +11,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function() 
+(function()
  {
     //
     //      Config
