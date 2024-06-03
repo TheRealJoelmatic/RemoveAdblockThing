@@ -1,11 +1,13 @@
 // ==UserScript==
-// @name         YouTube Ad-Free Player
+// @name         YouTube Ad-Free Custom Player
 // @namespace    http://tampermonkey.net/
-// @version      1.9
-// @description  Plays YouTube videos in a custom HTML5 player without ads
+// @version      2.0
+// @description  Replaces YouTube's player with a custom HTML5 player to avoid ads and enhance playback experience
 // @author       OHG
 // @match        https://www.youtube.com/watch?v=*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @updateURL    https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
+// @downloadURL  https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
 // @connect      youtube.com
@@ -72,9 +74,18 @@
         videoContainer.appendChild(videoPlayer);
         document.body.appendChild(videoContainer);
 
+        // Hide YouTube's default player
+        const youtubePlayer = document.querySelector('#player');
+        if (youtubePlayer) {
+            youtubePlayer.style.display = 'none';
+        }
+
         // Remove the custom player when the video ends
         videoPlayer.onended = function() {
             videoContainer.remove();
+            if (youtubePlayer) {
+                youtubePlayer.style.display = '';
+            }
         };
     }
 
