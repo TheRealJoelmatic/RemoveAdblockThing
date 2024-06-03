@@ -1,3 +1,16 @@
+// ==UserScript==
+// @name         Remove Adblock Thing
+// @namespace    http://tampermonkey.net/
+// @version      5.4
+// @description  Removes Adblock Thing
+// @author       JoelMatic
+// @match        https://www.youtube.com/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
+// @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
+// @grant        none
+// ==/UserScript==
+
 (function() {
     //
     //      Config
@@ -234,4 +247,160 @@
             .ytd-video-masthead-ad-v3-renderer,
             div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint,
             div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer,
-            div#main-contai
+            div#main-container.style-scope.ytd-promoted-video-renderer,
+            div#player-ads.style-scope.ytd-watch-flexy,
+            ad-slot-renderer,
+            ytm-promoted-sparkles-web-renderer,
+            masthead-ad,
+            tp-yt-iron-overlay-backdrop,
+
+            #masthead-ad {
+                display: none !important;
+            }
+        `;
+
+        document.head.appendChild(style);
+
+        sponsor?.forEach((element) => {
+             if (element.getAttribute("id") === "rendering-content") {
+                element.childNodes?.forEach((childElement) => {
+                  if (childElement?.data.targetId && childElement?.data.targetId !=="engagement-panel-macro-markers-description-chapters"){
+                      //Skipping the Chapters section
+                        element.style.display = 'none';
+                    }
+                   });
+            }
+         });
+
+        log("Removed page ads (✔️)");
+    }
+
+    //
+    // Update check
+    //
+
+    function checkForUpdate(){
+
+        if (window.top !== window.self && !(window.location.href.includes("youtube.com"))){
+            return;
+        }
+
+        if (hasIgnoredUpdate){
+            return;
+        }
+
+        const scriptUrl = 'https://raw.githubusercontent.com/TheRealJoelmatic/RemoveAdblockThing/main/Youtube-Ad-blocker-Reminder-Remover.user.js';
+
+        fetch(scriptUrl)
+        .then(response => response.text())
+        .then(data => {
+            // Extract version from the script on GitHub
+            const match = data.match(/@version\s+(\d+\.\d+)/);
+            if (!match) {
+                log("Unable to extract version from the GitHub script.", "e")
+                return;
+            }
+
+            const githubVersion = parseFloat(match[1]);
+            const currentVersion = parseFloat(GM_info.script.version);
+
+            if (githubVersion <= currentVersion) {
+                log('You have the latest version of the script. ' + githubVersion + " : " + currentVersion);
+                return;
+            }
+
+            console.log('Remove Adblock Thing: A new version is available. Please update your script. ' + githubVersion + " : " + currentVersion);
+
+            if(updateModal.enable){
+                // if a version is skipped, don't show the update message again until the next version
+                if (parseFloat(localStorage.getItem('skipRemoveAdblockThingVersion')) === githubVersion) {
+                    return;
+                }
+                // If enabled, include the SweetAlert2 library
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                document.head.appendChild(script);
+
+                const style = document.createElement('style');
+                style.textContent = '.swal2-container { z-index: 2400; }';
+                document.head.appendChild(style);
+
+                // Wait for SweetAlert to be fully loaded
+                script.onload = function () {
+
+                    Swal.fire({
+                        position: "top-end",
+                        backdrop: false,
+                        title: 'Remove Adblock Thing: New version is available.',
+                        text: 'Do you want to update?',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: 'Update',
+                        denyButtonText:'Skip',
+                        cancelButtonText: 'Close',
+                        timer: updateModal.timer ?? 5000,
+                        timerProgressBar: true,
+                        didOpen: (modal) => {
+                            modal.onmouseenter = Swal.stopTimer;
+                            modal.onmouseleave = Swal.resumeTimer;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.replace(scriptUrl);
+                        } else if(result.isDenied) {
+                            localStorage.setItem('skipRemoveAdblockThingVersion', githubVersion);
+                        }
+                    });
+                };
+
+                script.onerror = function () {
+                    var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+                    if (result) {
+                        window.location.replace(scriptUrl);
+                    }
+                }
+            } else {
+                var result = window.confirm("Remove Adblock Thing: A new version is available. Please update your script.");
+
+                if (result) {
+                    window.location.replace(scriptUrl);
+                }
+            }
+        })
+        .catch(error => {
+            hasIgnoredUpdate = true;
+            log("Error checking for updates:", "e", error)
+        });
+        hasIgnoredUpdate = true;
+    }
+
+    // Used for debug messages
+    function log(log, level = 'l', ...args) {
+        if (!debugMessages) return;
+
+        const prefix = 'Remove Adblock Thing:'
+        const message = `${prefix} ${log}`;
+        switch (level) {
+            case 'e':
+            case 'err':
+            case 'error':
+                console.error(message, ...args);
+                break;
+            case 'l':
+            case 'log':
+                console.log(message, ...args);
+                break;
+            case 'w':
+            case 'warn':
+            case 'warning':
+                console.warn(message, ...args);
+                break;
+            case 'i':
+            case 'info':
+            default:
+        console.info(message, ...args);
+        break
+    }
+    }
+
+})();
