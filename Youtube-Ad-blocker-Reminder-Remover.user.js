@@ -101,7 +101,8 @@
     function skipVideoAds() {
         const video = document.querySelector('video');
         if (video) {
-            if (video.currentTime < video.duration && document.querySelector('.ad-showing')) {
+            const adOverlay = document.querySelector('.ad-showing');
+            if (adOverlay) {
                 video.currentTime = video.duration;
                 video.play();
             }
