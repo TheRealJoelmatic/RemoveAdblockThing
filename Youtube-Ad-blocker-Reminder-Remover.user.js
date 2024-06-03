@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Removes Adblock Thing and improves YouTube experience
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
