@@ -1,121 +1,87 @@
 // ==UserScript==
-// @name         Enhanced Remove Adblock Thing
+// @name         YouTube Ad-Free Player
 // @namespace    http://tampermonkey.net/
-// @version      1.8
-// @description  Removes Adblock Thing and improves YouTube experience without breaking video playback
+// @version      1.9
+// @description  Plays YouTube videos in a custom HTML5 player without ads
 // @author       OHG
-// @match        https://www.youtube.com/*
+// @match        https://www.youtube.com/watch?v=*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @updateURL    https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
-// @downloadURL  https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @grant        GM_addStyle
+// @connect      youtube.com
+// @connect      googlevideo.com
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // Function to remove ad elements and ad blocker warnings
-    function removeAdsAndWarnings() {
-        const adElements = [
-            'ytd-action-companion-ad-renderer',
-            'ytd-display-ad-renderer',
-            'ytd-video-masthead-ad-advertiser-info-renderer',
-            'ytd-video-masthead-ad-primary-video-renderer',
-            'ytd-in-feed-ad-layout-renderer',
-            'ytd-ad-slot-renderer',
-            'yt-about-this-ad-renderer',
-            'yt-mealbar-promo-renderer',
-            'ytd-statement-banner-renderer',
-            'ytd-banner-promo-renderer-background',
-            '.ytd-video-masthead-ad-v3-renderer',
-            'div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint',
-            'div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer',
-            'div#main-container.style-scope.ytd-promoted-video-renderer',
-            'div#player-ads.style-scope.ytd-watch-flexy',
-            'ad-slot-renderer',
-            'ytm-promoted-sparkles-web-renderer',
-            'masthead-ad',
-            'tp-yt-iron-overlay-backdrop',
-            '#masthead-ad',
-            'yt-upsell-dialog-renderer',
-            'ytd-popup-container',
-            'tp-yt-paper-dialog',
-        ];
-
-        adElements.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => element.remove());
-        });
-    }
-
-    // Function to specifically remove ad blocker warnings
-    function removeAdBlockerWarnings() {
-        const warningElements = [
-            '.ytp-ad-player-overlay',
-            '.html5-video-info-panel',
-            '#player-ads',
-            '#consent-bump',
-            '#message' // Specific ad blocker warning element
-        ];
-
-        warningElements.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => element.remove());
-        });
-    }
-
-    // Block ad-related scripts
-    function blockAdScripts() {
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.tagName === 'SCRIPT' && node.src.includes('ad')) {
-                        node.remove();
-                    }
-                });
-            });
-        });
-
-        observer.observe(document, { childList: true, subtree: true });
-    }
-
-    // Additional CSS to hide ad-related overlays and messages
-    function injectCSS() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .ytp-ad-player-overlay,
-            .html5-video-info-panel,
-            #player-ads,
-            #consent-bump,
-            #message {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // Function to skip video ads
-    function skipVideoAds() {
-        const video = document.querySelector('video');
-        if (video && document.querySelector('.ad-showing')) {
-            video.currentTime = video.duration;
-            video.play();
+    // Custom CSS for the HTML5 video player
+    GM_addStyle(`
+        #custom-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
+        #custom-video-player {
+            width: 80%;
+            height: 80%;
+            background: black;
+        }
+    `);
+
+    // Function to fetch the video URL
+    function fetchVideoUrl(videoId, callback) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: `https://www.youtube.com/get_video_info?video_id=${videoId}`,
+            onload: function(response) {
+                const urlParams = new URLSearchParams(response.responseText);
+                const playerResponse = JSON.parse(urlParams.get('player_response'));
+                const streamingData = playerResponse.streamingData;
+                if (streamingData && streamingData.formats) {
+                    const videoUrl = streamingData.formats[0].url;
+                    callback(videoUrl);
+                } else {
+                    alert('Unable to fetch video URL');
+                }
+            },
+            onerror: function() {
+                alert('Error fetching video URL');
+            }
+        });
     }
 
-    // Initialize ad removal and script blocking
-    function init() {
-        injectCSS();
-        removeAdsAndWarnings();
-        removeAdBlockerWarnings();
-        blockAdScripts();
-        setInterval(() => {
-            removeAdsAndWarnings();
-            removeAdBlockerWarnings();
-            skipVideoAds();
-        }, 1000);
+    // Function to create and play the video in a custom HTML5 player
+    function createCustomPlayer(videoUrl) {
+        const videoContainer = document.createElement('div');
+        videoContainer.id = 'custom-video-container';
+
+        const videoPlayer = document.createElement('video');
+        videoPlayer.id = 'custom-video-player';
+        videoPlayer.src = videoUrl;
+        videoPlayer.controls = true;
+        videoPlayer.autoplay = true;
+
+        videoContainer.appendChild(videoPlayer);
+        document.body.appendChild(videoContainer);
+
+        // Remove the custom player when the video ends
+        videoPlayer.onended = function() {
+            videoContainer.remove();
+        };
     }
 
-    // Run the init function
-    init();
+    // Get the video ID from the URL
+    const videoId = new URLSearchParams(window.location.search).get('v');
+
+    if (videoId) {
+        fetchVideoUrl(videoId, createCustomPlayer);
+    }
 })();
