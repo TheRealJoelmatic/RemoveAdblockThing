@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Removes Adblock Thing and improves YouTube experience without breaking video playback
 // @author       OHG
 // @match        https://www.youtube.com/*
@@ -38,11 +38,8 @@
             'tp-yt-iron-overlay-backdrop',
             '#masthead-ad',
             'yt-upsell-dialog-renderer',
-            'ytp-ad-player-overlay',
             'ytd-popup-container',
             'tp-yt-paper-dialog',
-            '.ad-showing', // Target ad overlay during video playback
-            '.video-ads' // Target video ads container
         ];
 
         adElements.forEach(selector => {
@@ -100,12 +97,9 @@
     // Function to skip video ads
     function skipVideoAds() {
         const video = document.querySelector('video');
-        if (video) {
-            const adOverlay = document.querySelector('.ad-showing');
-            if (adOverlay) {
-                video.currentTime = video.duration;
-                video.play();
-            }
+        if (video && document.querySelector('.ad-showing')) {
+            video.currentTime = video.duration;
+            video.play();
         }
     }
 
