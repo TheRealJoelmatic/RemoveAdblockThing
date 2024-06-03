@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Removes Adblock Thing and improves YouTube experience
 // @author       OHG
 // @match        https://www.youtube.com/*
@@ -44,28 +44,30 @@
             elements.forEach(element => element.remove());
         });
 
-        const videoAds = document.querySelectorAll('.ad-showing');
-        videoAds.forEach(ad => {
-            const video = document.querySelector('video');
-            if (video) {
-                video.currentTime = video.duration;
-                video.play();
-            }
-            ad.remove();
-        });
+        // Check for video ads and skip them
+        const video = document.querySelector('video');
+        if (video) {
+            const observer = new MutationObserver(() => {
+                const adContainer = document.querySelector('.ad-showing');
+                if (adContainer) {
+                    video.currentTime = video.duration;
+                    video.play();
+                }
+            });
+
+            observer.observe(document, { childList: true, subtree: true });
+        }
     }
 
     // Block ad-related scripts
     function blockAdScripts() {
         const observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
-                if (mutation.addedNodes.length) {
-                    mutation.addedNodes.forEach(node => {
-                        if (node.tagName === 'SCRIPT' && node.src.includes('ad')) {
-                            node.remove();
-                        }
-                    });
-                }
+                mutation.addedNodes.forEach(node => {
+                    if (node.tagName === 'SCRIPT' && node.src.includes('ad')) {
+                        node.remove();
+                    }
+                });
             });
         });
 
