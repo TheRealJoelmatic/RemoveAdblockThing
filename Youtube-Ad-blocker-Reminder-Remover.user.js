@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.3
+// @version      5.4
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -54,40 +54,8 @@
     // Store the initial URL
     let currentUrl = window.location.href;
 
-    // Used for if there is ad found
-    let isAdFound = false;
-
-    //used to see how meny times we have loopped with a ad active
-    let adLoop = 0;
-
-    //
-    // Button click
-    //
-
-    const event = new PointerEvent('click', {
-        pointerId: 1,
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        detail: 1,
-        screenX: 0,
-        screenY: 0,
-        clientX: 0,
-        clientY: 0,
-        ctrlKey: false,
-        altKey: false,
-        shiftKey: false,
-        metaKey: false,
-        button: 0,
-        buttons: 1,
-        width: 1,
-        height: 1,
-        pressure: 0.5,
-        tiltX: 0,
-        tiltY: 0,
-        pointerType: 'mouse',
-        isPrimary: true
-    });
+    // Used for after the player is updated
+    let isVideoPlayerModified = false;
 
     //
     // Variables used for updater
@@ -148,154 +116,113 @@
     // undetected adblocker method
     function removeAds()
     {
-
         log("removeAds()");
-
-        var videoPlayback = 1;
 
         setInterval(() =>{
 
-            var video = document.querySelector('video');
-            const ad = [...document.querySelectorAll('.ad-showing')][0];
+            const videoPlayerElement = document.querySelector('.html5-video-player');
 
-
-            //remove page ads
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
+                isVideoPlayerModified = false;
+                clearPlayer(videoPlayerElement);
                 removePageAds();
             }
 
-            if (ad)
-            {
-                isAdFound = true;
-                adLoop = adLoop + 1;
-
-                log("adLoop: " + adLoop);
-
-                // If we tried 15 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
-
-
-                if(adLoop >= 5){
-                    //set the add to half to press the skip button
-                    if (video.currentTime != undefined || video.currentTime > 0.10){
-                        if(video.currentTime < (video.duration / 2)){
-                            let randomNumber = Math.floor(Math.random() * 2) + 1;
-                            //video.currentTime = (video.duration / 2) + randomNumber || 0;
-                            video.playbackRate = 10 - randomNumber;
-                        }
-                    }
-                }
-
-                //
-                // ad center method
-                //
-
-                if(adLoop <= 5){
-                    if (video) video.pause();
-
-                    const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                    openAdCenterButton?.dispatchEvent(event);
-
-                    const blockAdButton = document.querySelector('[label="Block ad"]');
-                    blockAdButton?.dispatchEvent(event);
-
-                    const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                    blockAdButtonConfirm?.dispatchEvent(event);
-
-                    const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                    closeAdCenterButton?.dispatchEvent(event);
-
-                    if (video) video.play();
-                }
-
-
-                var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-                if (popupContainer){
-                    // popupContainer persists, lets not spam
-                    if (popupContainer.style.display == "")
-                        popupContainer.style.display = 'none';
-                }
-
-                //
-                // Speed Skip Method
-                //
-                log("Found Ad");
-
-
-                //This is beacuse youtube keeps changing the class of the skip button for what ever reason
-                let skipButtons = [
-                'ytp-ad-skip-button-container',
-                'ytp-ad-skip-button-modern',
-                '.videoAdUiSkipButton',
-                '.ytp-ad-skip-button',
-                '.ytp-ad-skip-button-modern',
-                '.ytp-ad-skip-button',
-                '.ytp-ad-skip-button-slot',
-                'ytp-skip-ad-button',
-                'skip-button'
-                ];
-                const elementsWithSkipButton = document.querySelectorAll('[class*="skip-button"]');
-
-                const classesFromElements = Array.from(elementsWithSkipButton).map(element => element.className.split(' ')).flat();
-                const uniqueClassesFromElements = [...new Set(classesFromElements)];
-                
-                skipButtons = [...new Set([...skipButtons, ...uniqueClassesFromElements])];
-
-                if (video){
-
-                    //Seems to beh patched and gets dectected
-                    //video.playbackRate = 10;
-                    video.volume = 0;
-
-                    // Iterate through the array of selectors
-                    skipButtons.forEach(selector => {
-                        // Select all elements matching the current selector
-                        const elements = document.querySelectorAll(selector);
-
-                        // Check if any elements were found
-                        if (elements && elements.length > 0) {
-                          // Iterate through the selected elements and click
-                          elements.forEach(element => {
-                            element?.dispatchEvent(event);
-                          });
-                        }
-                    });
-                    video.play();
-
-                    //Seems to beh patched and gets dectected
-                }
-
-                log("skipped Ad (✔️)");
-
-            } else {
-
-                //check for unreasonale playback speed
-                if(video && video?.playbackRate == 10){
-                    video.playbackRate = videoPlayback;
-                }
-
-                if (isAdFound){
-                    isAdFound = false;
-
-                    // this is right after the ad is skipped
-                    // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
-
-
-                    //somthing bugged out default to 1x then
-                    if (videoPlayback == 10) videoPlayback = 1;
-                    if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
-
-                    //set ad loop back to the defualt
-                    adLoop = 0;
-                }
-                else{
-                    if(video) videoPlayback = video.playbackRate;
-                }
+            if (isVideoPlayerModified){
+                return;
             }
 
-        }, 50)
+            log("Video replacement started!");
 
+            //
+            // Get the url
+            //
+
+            let videoID = '';
+            const baseURL = 'https://www.youtube.com/watch?v=';
+            const startIndex = currentUrl.indexOf(baseURL);
+
+
+            if (startIndex !== -1) {
+                // Extract the part of the URL after the base URL
+                const videoIDStart = startIndex + baseURL.length;
+                videoID = currentUrl.substring(videoIDStart);
+
+                const ampersandIndex = videoID.indexOf('&');
+                if (ampersandIndex !== -1) {
+                    videoID = videoID.substring(0, ampersandIndex);
+                }
+
+            } else {
+                log("YouTube video URL not found.", "e")
+                return null;
+            }
+
+            log("Video ID: " + videoID);
+
+            //
+            // Remove the current player
+            //
+
+            if(!clearPlayer(videoPlayerElement)){
+                return;
+            }
+
+            //
+            // Create new frame for the video
+            //
+
+            const startOfUrl = "https://www.youtube-nocookie.com/embed/";
+            const endOfUrl = "?autoplay=1&modestbranding=1";
+            const finalUrl = startOfUrl + videoID + endOfUrl;
+
+            const iframe = document.createElement('iframe');
+
+            iframe.setAttribute('src', finalUrl);
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+            iframe.setAttribute('allowfullscreen', true);
+            iframe.setAttribute('mozallowfullscreen', "mozallowfullscreen");
+            iframe.setAttribute('msallowfullscreen', "msallowfullscreen");
+            iframe.setAttribute('oallowfullscreen', "oallowfullscreen");
+            iframe.setAttribute('webkitallowfullscreen', "webkitallowfullscreen");
+
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.position = 'absolute';
+            iframe.style.top = '0';
+            iframe.style.left = '0';
+            iframe.style.zIndex = '9999';
+            iframe.style.pointerEvents = 'all'; 
+
+            videoPlayerElement.appendChild(iframe);
+            log("Finished");
+
+            isVideoPlayerModified = true;
+        }, 500)
         removePageAds();
+    }
+    //
+    // logic functionm
+    // 
+
+    function clearPlayer(videoPlayerElement){
+        //
+        // Remove the current player
+        //
+
+        if (!videoPlayerElement) {
+            console.error("Element with class 'html5-video-player' not found.");
+            return false;
+        }
+
+        while (videoPlayerElement.firstChild) {
+            videoPlayerElement.removeChild(videoPlayerElement.firstChild);
+        }
+
+        log("Removed current player!");
+        return true;
     }
 
     //removes ads on the page (not video player ads)
