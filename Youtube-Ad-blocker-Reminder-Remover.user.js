@@ -1,98 +1,87 @@
 // ==UserScript==
-// @name         YouTube Ad-Free Custom Player
+// @name         Enhanced YouTube Ad Remover and Player Fix
 // @namespace    http://tampermonkey.net/
-// @version      2.0
-// @description  Replaces YouTube's player with a custom HTML5 player to avoid ads and enhance playback experience
+// @version      2.1
+// @description  Removes ads and warnings, ensures main video player works
 // @author       OHG
-// @match        https://www.youtube.com/watch?v=*
+// @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @updateURL    https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @downloadURL  https://github.com/Open-Horizon-Games/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
-// @grant        GM_xmlhttpRequest
-// @grant        GM_addStyle
-// @connect      youtube.com
-// @connect      googlevideo.com
+// @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // Custom CSS for the HTML5 video player
-    GM_addStyle(`
-        #custom-video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        #custom-video-player {
-            width: 80%;
-            height: 80%;
-            background: black;
-        }
-    `);
+    // Function to remove ad elements
+    function removeAds() {
+        const adElements = [
+            'ytd-action-companion-ad-renderer',
+            'ytd-display-ad-renderer',
+            'ytd-video-masthead-ad-advertiser-info-renderer',
+            'ytd-video-masthead-ad-primary-video-renderer',
+            'ytd-in-feed-ad-layout-renderer',
+            'ytd-ad-slot-renderer',
+            'yt-about-this-ad-renderer',
+            'yt-mealbar-promo-renderer',
+            'ytd-statement-banner-renderer',
+            'ytd-banner-promo-renderer-background',
+            '.ytd-video-masthead-ad-v3-renderer',
+            'div#root.style-scope.ytd-display-ad-renderer.yt-simple-endpoint',
+            'div#sparkles-container.style-scope.ytd-promoted-sparkles-web-renderer',
+            'div#main-container.style-scope.ytd-promoted-video-renderer',
+            'div#player-ads.style-scope.ytd-watch-flexy',
+            'ad-slot-renderer',
+            'ytm-promoted-sparkles-web-renderer',
+            'masthead-ad',
+            'tp-yt-iron-overlay-backdrop',
+            '#masthead-ad',
+            '.ad-showing',
+            '.ad-interrupting'
+        ];
 
-    // Function to fetch the video URL
-    function fetchVideoUrl(videoId, callback) {
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: `https://www.youtube.com/get_video_info?video_id=${videoId}`,
-            onload: function(response) {
-                const urlParams = new URLSearchParams(response.responseText);
-                const playerResponse = JSON.parse(urlParams.get('player_response'));
-                const streamingData = playerResponse.streamingData;
-                if (streamingData && streamingData.formats) {
-                    const videoUrl = streamingData.formats[0].url;
-                    callback(videoUrl);
-                } else {
-                    alert('Unable to fetch video URL');
-                }
-            },
-            onerror: function() {
-                alert('Error fetching video URL');
-            }
+        adElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => element.remove());
         });
     }
 
-    // Function to create and play the video in a custom HTML5 player
-    function createCustomPlayer(videoUrl) {
-        const videoContainer = document.createElement('div');
-        videoContainer.id = 'custom-video-container';
-
-        const videoPlayer = document.createElement('video');
-        videoPlayer.id = 'custom-video-player';
-        videoPlayer.src = videoUrl;
-        videoPlayer.controls = true;
-        videoPlayer.autoplay = true;
-
-        videoContainer.appendChild(videoPlayer);
-        document.body.appendChild(videoContainer);
-
-        // Hide YouTube's default player
-        const youtubePlayer = document.querySelector('#player');
-        if (youtubePlayer) {
-            youtubePlayer.style.display = 'none';
+    // Function to skip video ads
+    function skipVideoAds() {
+        const video = document.querySelector('video');
+        const ad = document.querySelector('.ad-showing, .ad-interrupting');
+        if (ad && video) {
+            video.currentTime = video.duration;
+            video.play();
         }
-
-        // Remove the custom player when the video ends
-        videoPlayer.onended = function() {
-            videoContainer.remove();
-            if (youtubePlayer) {
-                youtubePlayer.style.display = '';
-            }
-        };
     }
 
-    // Get the video ID from the URL
-    const videoId = new URLSearchParams(window.location.search).get('v');
-
-    if (videoId) {
-        fetchVideoUrl(videoId, createCustomPlayer);
+    // Function to remove adblock warning
+    function removeAdblockWarning() {
+        const warning = document.querySelector('#adblock-warning');
+        if (warning) {
+            warning.remove();
+        }
     }
+
+    // Initialize ad removal, ad skipping, and adblock warning removal
+    function init() {
+        const observer = new MutationObserver(() => {
+            removeAds();
+            skipVideoAds();
+            removeAdblockWarning();
+        });
+
+        observer.observe(document, { childList: true, subtree: true });
+        
+        setInterval(() => {
+            removeAds();
+            skipVideoAds();
+            removeAdblockWarning();
+        }, 1000);
+    }
+
+    // Run the init function
+    init();
 })();
