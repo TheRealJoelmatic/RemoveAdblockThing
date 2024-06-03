@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Enhanced Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.5
-// @description  Removes Adblock Thing and improves YouTube experience
+// @version      1.6
+// @description  Removes Adblock Thing and improves YouTube experience without breaking video playback
 // @author       OHG
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
@@ -14,7 +14,7 @@
 (function() {
     'use strict';
 
-    // Function to remove ad elements and ad blocker warning
+    // Function to remove ad elements and ad blocker warnings
     function removeAdsAndWarnings() {
         const adElements = [
             'ytd-action-companion-ad-renderer',
@@ -37,37 +37,25 @@
             'masthead-ad',
             'tp-yt-iron-overlay-backdrop',
             '#masthead-ad',
-            'yt-upsell-dialog-renderer', // Possible ad blocker warning element
-            'ytp-ad-player-overlay', // Video ad overlay
-            'ytd-popup-container' // Container for various popups, including adblock messages
+            'yt-upsell-dialog-renderer',
+            'ytp-ad-player-overlay',
+            'ytd-popup-container',
+            'tp-yt-paper-dialog'
         ];
 
         adElements.forEach(selector => {
             const elements = document.querySelectorAll(selector);
             elements.forEach(element => element.remove());
         });
-
-        // Check for video ads and skip them
-        const video = document.querySelector('video');
-        if (video) {
-            const observer = new MutationObserver(() => {
-                const adContainer = document.querySelector('.ad-showing');
-                if (adContainer) {
-                    video.currentTime = video.duration;
-                    video.play();
-                }
-            });
-
-            observer.observe(document, { childList: true, subtree: true });
-        }
     }
 
-    // Function to remove ad blocker warnings specifically
+    // Function to specifically remove ad blocker warnings
     function removeAdBlockerWarnings() {
         const warningElements = [
             '.ytp-ad-player-overlay',
             '.html5-video-info-panel',
-            '#player .ad-interrupting'
+            '#player-ads',
+            '#consent-bump'
         ];
 
         warningElements.forEach(selector => {
@@ -97,7 +85,8 @@
         style.textContent = `
             .ytp-ad-player-overlay,
             .html5-video-info-panel,
-            #player .ad-interrupting {
+            #player-ads,
+            #consent-bump {
                 display: none !important;
             }
         `;
