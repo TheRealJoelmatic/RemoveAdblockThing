@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Removes Adblock Thing and improves YouTube experience
 // @author       OHG
 // @match        https://www.youtube.com/*
@@ -37,7 +37,9 @@
             'masthead-ad',
             'tp-yt-iron-overlay-backdrop',
             '#masthead-ad',
-            '#message'  // ID of the ad blocker warning element
+            'yt-upsell-dialog-renderer', // Possible ad blocker warning element
+            'ytp-ad-player-overlay', // Video ad overlay
+            'ytd-popup-container' // Container for various popups, including adblock messages
         ];
 
         adElements.forEach(selector => {
@@ -75,8 +77,22 @@
         observer.observe(document, { childList: true, subtree: true });
     }
 
+    // Additional CSS to hide ad-related overlays and messages
+    function injectCSS() {
+        const style = document.createElement('style');
+        style.textContent = `
+            ytd-popup-container,
+            .ytp-ad-player-overlay,
+            ytd-upsell-dialog-renderer {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     // Initialize ad removal and script blocking
     function init() {
+        injectCSS();
         removeAdsAndWarnings();
         blockAdScripts();
         setInterval(removeAdsAndWarnings, 1000);
