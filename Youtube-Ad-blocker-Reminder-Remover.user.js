@@ -14,8 +14,8 @@
 (function() {
     'use strict';
 
-    // Function to remove ad elements
-    function removeAds() {
+    // Function to remove ad elements and ad blocker warning
+    function removeAdsAndWarnings() {
         const adElements = [
             'ytd-action-companion-ad-renderer',
             'ytd-display-ad-renderer',
@@ -36,7 +36,8 @@
             'ytm-promoted-sparkles-web-renderer',
             'masthead-ad',
             'tp-yt-iron-overlay-backdrop',
-            '#masthead-ad'
+            '#masthead-ad',
+            '#message'  // ID of the ad blocker warning element
         ];
 
         adElements.forEach(selector => {
@@ -76,9 +77,9 @@
 
     // Initialize ad removal and script blocking
     function init() {
-        removeAds();
+        removeAdsAndWarnings();
         blockAdScripts();
-        setInterval(removeAds, 1000);
+        setInterval(removeAdsAndWarnings, 1000);
     }
 
     // Run the init function
