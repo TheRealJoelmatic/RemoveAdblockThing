@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.4
+// @version      5.5
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -120,12 +120,10 @@
 
         setInterval(() =>{
 
-            const videoPlayerElement = document.querySelector('.html5-video-player');
-
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
                 isVideoPlayerModified = false;
-                clearPlayer(videoPlayerElement);
+                clearAllPlayers();
                 removePageAds();
             }
 
@@ -134,6 +132,23 @@
             }
 
             log("Video replacement started!");
+
+            //
+            // remove ad audio
+            //
+
+            var video = document.querySelector('video');
+            if (video) video.volume = 0;
+            if (video) video.pause();
+            if (video) video.remove();
+
+            //
+            // Remove the current player
+            //
+
+            if(!clearAllPlayers()){
+                return;
+            }
 
             //
             // Get the url
@@ -162,14 +177,6 @@
             log("Video ID: " + videoID);
 
             //
-            // Remove the current player
-            //
-
-            if(!clearPlayer(videoPlayerElement)){
-                return;
-            }
-
-            //
             // Create new frame for the video
             //
 
@@ -196,6 +203,7 @@
             iframe.style.zIndex = '9999';
             iframe.style.pointerEvents = 'all'; 
 
+            const videoPlayerElement = document.querySelector('.html5-video-player');
             videoPlayerElement.appendChild(iframe);
             log("Finished");
 
@@ -207,21 +215,22 @@
     // logic functionm
     // 
 
-    function clearPlayer(videoPlayerElement){
-        //
-        // Remove the current player
-        //
-
-        if (!videoPlayerElement) {
-            console.error("Element with class 'html5-video-player' not found.");
+    function clearAllPlayers() {
+    
+        const videoPlayerElements = document.querySelectorAll('.html5-video-player');
+    
+        if (videoPlayerElements.length === 0) {
+            console.error("No elements with class 'html5-video-player' found.");
             return false;
         }
-
-        while (videoPlayerElement.firstChild) {
-            videoPlayerElement.removeChild(videoPlayerElement.firstChild);
-        }
-
-        log("Removed current player!");
+    
+        videoPlayerElements.forEach(videoPlayerElement => {
+            while (videoPlayerElement.firstChild) {
+                videoPlayerElement.removeChild(videoPlayerElement.firstChild);
+            }
+        });
+    
+        console.log("Removed all current players!");
         return true;
     }
 
@@ -376,32 +385,26 @@
     }
 
     // Used for debug messages
-    function log(log, level = 'l', ...args) {
-        if (!debugMessages) return;
+    function log(log, level, ...args) {
 
-        const prefix = 'Remove Adblock Thing:'
+        if(!debugMessages)
+            return;
+
+        const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
         switch (level) {
-            case 'e':
-            case 'err':
             case 'error':
-                console.error(message, ...args);
+                console.error(`❌ ${message}`, ...args);
                 break;
-            case 'l':
             case 'log':
-                console.log(message, ...args);
+                console.log(`✅ ${message}`, ...args);
                 break;
-            case 'w':
-            case 'warn':
             case 'warning':
-                console.warn(message, ...args);
+                console.warn(`⚠️ ${message}`, ...args);
                 break;
-            case 'i':
-            case 'info':
             default:
-        console.info(message, ...args);
-        break
-    }
+                console.info(`ℹ️ ${message}`, ...args);
+        }        
     }
 
 })();
