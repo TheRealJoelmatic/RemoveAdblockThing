@@ -21,9 +21,9 @@
 
 (function()
  {
-    //
-    //      Config
-    //
+     /**
+      * Config
+      */
 
     // Enable The Undetected Adblocker
     const adblocker = true;
@@ -36,7 +36,7 @@
 
     // Enable debug messages into the console
     const debugMessages = true;
-    
+
     // Enable custom modal
     // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
     // When set to false, the default window popup will be used. And the library will not be loaded.
@@ -61,10 +61,10 @@
     // Variables used for updater
     let hasIgnoredUpdate = false;
 
-    //
-    // Setup
-    //
 
+    /**
+      * Setup
+      */
     log("Script started");
 
     if (adblocker) removeAds();
@@ -111,12 +111,12 @@
         }, 1000);
     }
 
-        /**
-         * Removes ads from YouTube videos (undetected adblocker method)
-         */
-        function removeAds()
-        {
-            log("removeAds()");
+    /**
+     * Removes ads from YouTube videos (undetected adblocker method)
+     */
+    function removeAds()
+    {
+        log("removeAds()");
 
         setInterval(() =>{
 
@@ -133,32 +133,22 @@
 
             log("Video replacement started!");
 
-            //
             // remove ad audio
-            //
-
             var video = document.querySelector('video');
             if (video) video.volume = 0;
             if (video) video.pause();
             if (video) video.remove();
 
-            //
             // Remove the current player
-            //
-
             if(!clearAllPlayers()){
                 return;
             }
 
-            //
             // Get the url
-            //
-
             let videoID = '';
             const baseURL = 'https://www.youtube.com/watch?v=';
             const startIndex = currentUrl.indexOf(baseURL);
 
-            
             if (startIndex !== -1) {
                 // Extract the part of the URL after the base URL
                 const videoIDStart = startIndex + baseURL.length;
@@ -169,10 +159,10 @@
                     videoID = videoID.substring(0, ampersandIndex);
                 }
 
-                            } else {
-                    log("YouTube video URL not found.", "e")
-                    return null;
-                }
+            } else {
+                log("YouTube video URL not found.", "e")
+                return null;
+            }
 
             log("Video ID: " + videoID);
 
@@ -201,7 +191,7 @@
             iframe.style.top = '0';
             iframe.style.left = '0';
             iframe.style.zIndex = '9999';
-            iframe.style.pointerEvents = 'all';
+            iframe.style.pointerEvents = 'all'; 
 
             const videoPlayerElement = document.querySelector('.html5-video-player');
             videoPlayerElement.appendChild(iframe);
