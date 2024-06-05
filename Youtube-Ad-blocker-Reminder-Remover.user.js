@@ -28,6 +28,9 @@
 
     // Enable debug messages into the console
     const debugMessages = true;
+    
+    //boolean to know if user is on a youtube short
+    const isYoutubeShort = currentUrl.includes('shorts');
 
     // Enable custom modal
     // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
@@ -113,17 +116,17 @@
 
         }, 1000);
     }
-    // undetected adblocker method
-    function removeAds()
-    {
-        log("removeAds()");
+        // undetected adblocker method 
+        function removeAds()
+        {
+            log("removeAds()");
 
         setInterval(() =>{
 
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
                 isVideoPlayerModified = false;
-                clearAllPlayers();
+                if (!isYoutubeShort) clearAllPlayers();
                 removePageAds();
             }
 
@@ -158,7 +161,7 @@
             const baseURL = 'https://www.youtube.com/watch?v=';
             const startIndex = currentUrl.indexOf(baseURL);
 
-
+            
             if (startIndex !== -1) {
                 // Extract the part of the URL after the base URL
                 const videoIDStart = startIndex + baseURL.length;
@@ -169,10 +172,10 @@
                     videoID = videoID.substring(0, ampersandIndex);
                 }
 
-            } else {
-                log("YouTube video URL not found.", "e")
-                return null;
-            }
+                            } else {
+                    log("YouTube video URL not found.", "e")
+                    return null;
+                }
 
             log("Video ID: " + videoID);
 
@@ -201,7 +204,7 @@
             iframe.style.top = '0';
             iframe.style.left = '0';
             iframe.style.zIndex = '9999';
-            iframe.style.pointerEvents = 'all'; 
+            iframe.style.pointerEvents = 'all';
 
             const videoPlayerElement = document.querySelector('.html5-video-player');
             videoPlayerElement.appendChild(iframe);
