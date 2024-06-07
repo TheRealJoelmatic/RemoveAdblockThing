@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.5
+// @version      5.6
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -10,12 +10,20 @@
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
 // ==/UserScript==
+//
+//      CODE
+//
+// If you have any suggestions, bug reports,
+// or want to contribute to this userscript,
+// feel free to create issues or pull requests in the GitHub repository.
+//
+// GITHUB: https://github.com/TheRealJoelmatic/RemoveAdblockThing
 
 (function()
  {
-    //
-    //      Config
-    //
+     /**
+      * Config
+      */
 
     // Enable The Undetected Adblocker
     const adblocker = true;
@@ -37,16 +45,6 @@
         timer: 5000, // timer: number | false
     };
 
-
-    //
-    //      CODE
-    //
-    // If you have any suggestions, bug reports,
-    // or want to contribute to this userscript,
-    // feel free to create issues or pull requests in the GitHub repository.
-    //
-    // GITHUB: https://github.com/TheRealJoelmatic/RemoveAdblockThing
-
     //
     // Varables used for adblock
     //
@@ -54,27 +52,28 @@
     // Store the initial URL
     let currentUrl = window.location.href;
 
+    //boolean to know if user is on a youtube short
+    const isYoutubeShort = currentUrl.includes('shorts');
+
     // Used for after the player is updated
     let isVideoPlayerModified = false;
 
-    //
     // Variables used for updater
-    //
-
     let hasIgnoredUpdate = false;
 
-    //
-    // Setup
-    //
 
-    //Set everything up here
+    /**
+      * Setup
+      */
     log("Script started");
 
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
     if (updateCheck) checkForUpdate();
 
-    // Remove Them pesski popups
+    /**
+     * Removes pesski popups from YouTube
+     */
     function popupRemover() {
 
         setInterval(() => {
@@ -106,14 +105,15 @@
 
                 log("Popup removed");
             }
-            // Check if the video is paused after removing the popup
             if (!video.paused) return;
-            // UnPause The Video
             video.play();
 
         }, 1000);
     }
-    // undetected adblocker method
+
+    /**
+     * Removes ads from YouTube videos (undetected adblocker method)
+     */
     function removeAds()
     {
         log("removeAds()");
@@ -123,7 +123,7 @@
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
                 isVideoPlayerModified = false;
-                clearAllPlayers();
+                if (!isYoutubeShort) clearAllPlayers();
                 removePageAds();
             }
 
@@ -133,31 +133,21 @@
 
             log("Video replacement started!");
 
-            //
             // remove ad audio
-            //
-
             var video = document.querySelector('video');
             if (video) video.volume = 0;
             if (video) video.pause();
             if (video) video.remove();
 
-            //
             // Remove the current player
-            //
-
             if(!clearAllPlayers()){
                 return;
             }
 
-            //
             // Get the url
-            //
-
             let videoID = '';
             const baseURL = 'https://www.youtube.com/watch?v=';
             const startIndex = currentUrl.indexOf(baseURL);
-
 
             if (startIndex !== -1) {
                 // Extract the part of the URL after the base URL
@@ -211,10 +201,11 @@
         }, 500)
         removePageAds();
     }
-    //
-    // logic functionm
-    // 
 
+    /**
+     * Clears all video players on the page
+     * @returns {boolean} true if players were found and removed, false otherwise
+     */
     function clearAllPlayers() {
     
         const videoPlayerElements = document.querySelectorAll('.html5-video-player');
@@ -235,7 +226,9 @@
         return true;
     }
 
-    //removes ads on the page (not video player ads)
+    /**
+     * Removes ads on the YouTube page (not video player ads)
+     */
     function removePageAds(){
 
         const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
@@ -286,10 +279,9 @@
         log("Removed page ads (✔️)");
     }
 
-    //
-    // Update check
-    //
-
+    /**
+     * Checks for script updates
+     */
     function checkForUpdate(){
 
         if (window.top !== window.self && !(window.location.href.includes("youtube.com"))){
@@ -385,11 +377,14 @@
         hasIgnoredUpdate = true;
     }
 
-    // Used for debug messages
+    /**
+     * Logs messages to the console if debugMessages is enabled
+     * @param {string} message - The message to log
+     * @param {string} [level] - The log level ('error', 'log', 'warning', 'info')
+     * @param {...any} args - Additional arguments to log
+     */
     function log(log, level, ...args) {
-
-        if(!debugMessages)
-            return;
+        if (!debugMessages) return;
 
         const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
