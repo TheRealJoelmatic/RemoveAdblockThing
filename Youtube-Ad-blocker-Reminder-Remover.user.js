@@ -225,10 +225,11 @@
         }
     
         videoPlayerElements.forEach(videoPlayerElement => {
-            while (videoPlayerElement.firstChild) {
-                videoPlayerElement.removeChild(videoPlayerElement.firstChild);
-            }
+        const iframes = videoPlayerElement.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            iframe.remove();
         });
+    });
     
         console.log("Removed all current players!");
         return true;
