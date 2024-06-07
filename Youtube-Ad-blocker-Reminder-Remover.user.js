@@ -113,6 +113,18 @@
 
         }, 1000);
     }
+
+    function removeAllDuplicateVideos() {
+        const videos = document.querySelectorAll('video');
+
+        videos.forEach(video => {
+            if (video.src.includes('www.youtube.com')) {
+                video.remove();
+                log("Duplicate video found and removed:", video.src);
+            }
+        });
+    }
+
     // undetected adblocker method
     function removeAds()
     {
@@ -128,6 +140,7 @@
             }
 
             if (isVideoPlayerModified){
+                removeAllDuplicateVideos();
                 return;
             }
 
@@ -285,6 +298,20 @@
 
         log("Removed page ads (✔️)");
     }
+
+    function observerCallback(mutations) {
+        let isVideoAdded = mutations.some(mutation => 
+            Array.from(mutation.addedNodes).some(node => node.tagName === 'VIDEO')
+        );
+
+        if (isVideoAdded) {
+            log("New video detected, checking for duplicates.");
+            removeAllDuplicateVideos();
+        }
+    }
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(document.body, { childList: true, subtree: true });
 
     //
     // Update check
