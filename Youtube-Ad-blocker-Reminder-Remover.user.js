@@ -116,61 +116,28 @@
     // undetected adblocker method
     function removeAds()
     {
-        log("removeAds()");
-
-        setInterval(() =>{
-
-            if (window.location.href !== currentUrl) {
-                currentUrl = window.location.href;
-                isVideoPlayerModified = false;
-                clearAllPlayers();
-                removePageAds();
-            }
-
-            if (isVideoPlayerModified){
-                return;
-            }
-
-            log("Video replacement started!");
-
-            //
-            // remove ad audio
-            //
-
-            var video = document.querySelector('video');
-            if (video) video.volume = 0;
-            if (video) video.pause();
-            if (video) video.remove();
-
-            //
-            // Remove the current player
-            //
-
-            if(!clearAllPlayers()){
-                return;
-            }
-
+        function createNewPlayer() {
             //
             // Get the url
             //
 
             let videoID = '';
             const baseURL = 'https://www.youtube.com/watch?v=';
-            const startIndex = currentUrl.indexOf(baseURL);
+            const startIndex = window.location.href.indexOf(baseURL);
 
 
             if (startIndex !== -1) {
                 // Extract the part of the URL after the base URL
                 const videoIDStart = startIndex + baseURL.length;
-                videoID = currentUrl.substring(videoIDStart);
+                videoID = window.location.href.substring(videoIDStart);
 
                 const ampersandIndex = videoID.indexOf('&');
                 if (ampersandIndex !== -1) {
-                    videoID = videoID.substring(0, ampersandIndex);
+                videoID = videoID.substring(0, ampersandIndex);
                 }
 
             } else {
-                log("YouTube video URL not found.", "e")
+                alert("YouTube video URL not found.", "e")
                 return null;
             }
 
@@ -201,38 +168,75 @@
             iframe.style.top = '0';
             iframe.style.left = '0';
             iframe.style.zIndex = '9999';
-            iframe.style.pointerEvents = 'all'; 
+            iframe.style.pointerEvents = 'all';
 
             const videoPlayerElement = document.querySelector('.html5-video-player');
+            // TODO: make this build a whole new .html5-video-player instead of reutilizing the one from the original youtube player, so that the
+            // code below can be included on clearAllPlayers() for COMPLETELY REMOVING ALL VIDEO PLAYERS, with no remnants of it.
+
+            //var playerElements = document.querySelectorAll('.html5-video-player');
+            //playerElements.forEach(function(playerElement) {
+            //    var player = playerElement.getPlayer();
+            //        if (player && typeof player.pauseVideo === 'function') {
+            //            player.pauseVideo();
+            //        }
+            //});
+
+            //var videoPlayerElements = document.querySelectorAll('.html5-video-player');
+            //videoPlayerElements.forEach(playerElement => {
+            //    playerElement.remove();
+            //});
+
             videoPlayerElement.appendChild(iframe);
             log("Finished");
+        }
 
-            isVideoPlayerModified = true;
-        }, 500)
-        removePageAds();
+        function erasePlayers() {
+            setTimeout(() =>{
+                removePageAds();
+                clearAllPlayers();
+                if (window.location.href.includes("/watch")) {
+                    createNewPlayer();
+                }
+            }, 100) //TODO: Find a way of detecting whenever the page loads, and replace setTimeout with it.
+                    // because of this, two players are created sometimes. to solve it, just reload the page, and only one player will be created.
+                    // the player should ONLY be created once the page is fully loaded.
+        }
+
+        // Detect page changes
+        window.navigation.addEventListener("navigate", (event) => {
+            erasePlayers();
+        })
+
+        window.addEventListener("load", function() {
+            erasePlayers();
+        });
     }
     //
     // logic functionm
-    // 
+    //
 
     function clearAllPlayers() {
-    
-        const videoPlayerElements = document.querySelectorAll('.html5-video-player');
-    
-        if (videoPlayerElements.length === 0) {
-            console.error("No elements with class 'html5-video-player' found.");
-            return false;
-        }
-    
-        videoPlayerElements.forEach(videoPlayerElement => {
-        const iframes = videoPlayerElement.querySelectorAll('iframe');
-        iframes.forEach(iframe => {
+        // Maybe redundant? its all to make sure the player gets removed and no audio is left on background.
+
+        var iframes = document.querySelectorAll('iframe');
+        iframes.forEach(function(iframe) {
             iframe.remove();
         });
-    });
-    
+
+        var videos = document.querySelectorAll('video');
+        videos.forEach(function(video) {
+            video.volume = 0;
+            video.pause();
+            video.remove();
+        });
+
+        var mediaElements = document.querySelectorAll('audio, video');
+        mediaElements.forEach(function(mediaElement) {
+            mediaElement.pause();
+        });
+
         console.log("Removed all current players!");
-        return true;
     }
 
     //removes ads on the page (not video player ads)
@@ -405,7 +409,7 @@
                 break;
             default:
                 console.info(`ℹ️ ${message}`, ...args);
-        }        
+        }
     }
 
 })();
