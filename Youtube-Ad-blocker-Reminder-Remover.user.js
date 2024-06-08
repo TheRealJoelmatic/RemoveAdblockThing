@@ -139,6 +139,7 @@
             }
 
             if (isVideoPlayerModified){
+                removeAllDuplicateVideos();
                 return;
             }
 
