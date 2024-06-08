@@ -150,6 +150,14 @@
                 return;
             }
 
+            /**
+             * remove the "Ad blockers violate YouTube's Terms of Service" screen for safari
+             */
+            let errorScreen = document.querySelector("#error-screen");
+            if (errorScreen) {
+                errorScreen.remove();
+            }
+            
             //
             // Get the url
             //
