@@ -75,17 +75,26 @@
     if (updateCheck) checkForUpdate();
 
     // Remove Them pesski popups
-    function popupRemover() {
+function popupRemover() {
+    // Clear any existing interval
+    clearInterval(popupRemoverInterval);
 
-        setInterval(() => {
-            const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
-            const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
-            const popupButton = document.getElementById("dismiss-button");
+    let isPopupBeingProcessed = false; // Flag to track if a popup is being processed
 
-            var video = document.querySelector('video');
+    popupRemoverInterval = setInterval(() => {
+        if (isPopupBeingProcessed) return; // Skip if a popup is already being processed
 
-            const bodyStyle = document.body.style;
-            bodyStyle.setProperty('overflow-y', 'auto', 'important');
+        const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
+        const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
+        const popupButton = document.getElementById("dismiss-button");
+
+        var video = document.querySelector('video');
+
+        const bodyStyle = document.body.style;
+        bodyStyle.setProperty('overflow-y', 'auto', 'important');
+
+        if (modalOverlay || popup) {
+            isPopupBeingProcessed = true; // Set the flag to indicate a popup is being processed
 
             if (modalOverlay) {
                 modalOverlay.removeAttribute("opened");
@@ -95,7 +104,7 @@
             if (popup) {
                 log("Popup detected, removing...");
 
-                if(popupButton) popupButton.click();
+                if (popupButton) popupButton.click();
 
                 popup.remove();
                 video.play();
@@ -103,16 +112,19 @@
                 setTimeout(() => {
                     video.play();
                 }, 500);
-
-                log("Popup removed");
+              log("Popup removed");
             }
             // Check if the video is paused after removing the popup
-            if (!video.paused) return;
+            if (!video.paused) {
+                isPopupBeingProcessed = false; // Reset the flag since the popup has been processed
+                return;
+            }
             // UnPause The Video
             video.play();
-
-        }, 1000);
-    }
+            isPopupBeingProcessed = false; // Reset the flag since the popup has been processed
+        }
+    }, 1000);
+}
     // undetected adblocker method
     function removeAds()
     {
