@@ -114,11 +114,11 @@
         }, 1000);
     }
     // undetected adblocker method
-    function removeAds()
-    {
+    // undetected adblocker method
+    function removeAds() {
         log("removeAds()");
 
-        setInterval(() =>{
+        setInterval(() => {
 
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
@@ -127,7 +127,7 @@
                 removePageAds();
             }
 
-            if (isVideoPlayerModified){
+            if (isVideoPlayerModified) {
                 return;
             }
 
@@ -146,31 +146,30 @@
             // Remove the current player
             //
 
-            if(!clearAllPlayers()){
+            if (!clearAllPlayers()) {
                 return;
             }
 
             //
-            // Get the url
+            // Get the video ID from the URL
             //
 
             let videoID = '';
-            const baseURL = 'https://www.youtube.com/watch?v=';
-            const startIndex = currentUrl.indexOf(baseURL);
+            const url = new URL(window.location.href);
+            const urlParams = new URLSearchParams(url.search);
 
-
-            if (startIndex !== -1) {
-                // Extract the part of the URL after the base URL
-                const videoIDStart = startIndex + baseURL.length;
-                videoID = currentUrl.substring(videoIDStart);
-
-                const ampersandIndex = videoID.indexOf('&');
-                if (ampersandIndex !== -1) {
-                    videoID = videoID.substring(0, ampersandIndex);
-                }
-
+            if (urlParams.has('v')) {
+                videoID = urlParams.get('v');
             } else {
-                log("YouTube video URL not found.", "e")
+                const pathSegments = url.pathname.split('/');
+                const liveIndex = pathSegments.indexOf('live');
+                if (liveIndex !== -1 && liveIndex + 1 < pathSegments.length) {
+                    videoID = pathSegments[liveIndex + 1];
+                }
+            }
+
+            if (!videoID) {
+                log("YouTube video URL not found.", "e");
                 return null;
             }
 
@@ -201,14 +200,14 @@
             iframe.style.top = '0';
             iframe.style.left = '0';
             iframe.style.zIndex = '9999';
-            iframe.style.pointerEvents = 'all'; 
+            iframe.style.pointerEvents = 'all';
 
             const videoPlayerElement = document.querySelector('.html5-video-player');
             videoPlayerElement.appendChild(iframe);
             log("Finished");
 
             isVideoPlayerModified = true;
-        }, 500)
+        }, 500);
         removePageAds();
     }
     //
