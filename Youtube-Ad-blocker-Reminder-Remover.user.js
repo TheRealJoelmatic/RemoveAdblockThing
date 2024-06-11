@@ -193,7 +193,7 @@
             //
 
             const startOfUrl = "https://www.youtube-nocookie.com/embed/";
-            const endOfUrl = "?autoplay=1&modestbranding=1";
+            const endOfUrl = "?autoplay=1&modestbranding=1&rel=0";
             const finalUrl = startOfUrl + videoID + endOfUrl;
 
             const iframe = document.createElement('iframe');
