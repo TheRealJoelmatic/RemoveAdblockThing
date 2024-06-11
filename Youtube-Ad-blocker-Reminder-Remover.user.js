@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      5.5
+// @version      5.6
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -28,6 +28,9 @@
 
     // Enable debug messages into the console
     const debugMessages = true;
+
+    // Fix timestamps in the youtube comments for new method
+    const fixTimestamps = true;
 
     // Enable custom modal
     // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
@@ -73,6 +76,7 @@
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
     if (updateCheck) checkForUpdate();
+    if (fixTimestamps) timestampFix();
 
     // Remove Them pesski popups
     function popupRemover() {
@@ -113,6 +117,7 @@
 
         }, 1000);
     }
+
     // undetected adblocker method
     // undetected adblocker method
     function removeAds() {
@@ -127,7 +132,14 @@
                 removePageAds();
             }
 
-            if (isVideoPlayerModified) {
+            // Fix for youtube shorts
+            if (window.location.href.includes("shorts")) {
+                log("Youtube shorts detected, ignoring...");
+                return;
+            }
+
+            if (isVideoPlayerModified){
+                removeAllDuplicateVideos();
                 return;
             }
 
@@ -190,8 +202,10 @@
             //
 
             const startOfUrl = "https://www.youtube-nocookie.com/embed/";
-            const endOfUrl = "?autoplay=1&modestbranding=1";
-            const finalUrl = startOfUrl + videoID + endOfUrl + playList + timeStamp;
+          
+            const endOfUrl = "?autoplay=1&modestbranding=1&rel=0";
+            const finalUrl = startOfUrl + videoID + endOfUrl;
+
 
             const iframe = document.createElement('iframe');
 
@@ -223,6 +237,30 @@
     //
     // logic functionm
     // 
+
+    function removeAllDuplicateVideos() {
+        const videos = document.querySelectorAll('video');
+
+        videos.forEach(video => {
+            if (video.src.includes('www.youtube.com')) {
+                video.muted = true;
+                video.pause();
+                video.addEventListener('volumechange', function() {
+                    if (!video.muted) {
+                        video.muted = true;
+                        video.pause();
+                        log("Video unmuted detected and remuted");
+                    }
+                });
+                video.addEventListener('play', function() {
+                    video.pause();
+                    log("Video play detected and repaused");
+                });
+
+                log("Duplicate video found and muted");
+            }
+        });
+    }
 
     function clearAllPlayers() {
     
@@ -294,6 +332,52 @@
 
         log("Removed page ads (✔️)");
     }
+
+    function changeTimestamp(timestamp) {
+        const videoPlayerElements = document.querySelectorAll('.html5-video-player');
+        videoPlayerElements.forEach(videoPlayerElement => {
+            const iframes = videoPlayerElement.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                if (iframe.src.includes("&start=")) {
+                    iframe.src = iframe.src.replace(/&start=\d+/, "&start=" + timestamp);
+                } else {
+                    iframe.src += "&start=" + timestamp;
+                }
+            });
+        });
+    }
+
+    function timestampFix() {
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('yt-core-attributed-string__link') && target.href.includes('&t=')) {
+                event.preventDefault();
+                const timestamp = target.href.split('&t=')[1].split('s')[0];
+                log(`Timestamp link clicked: ${timestamp} seconds`);
+                changeTimestamp(timestamp);
+            }
+        });
+    }
+
+    function observerCallback(mutations) {
+        let isVideoAdded = mutations.some(mutation => 
+            Array.from(mutation.addedNodes).some(node => node.tagName === 'VIDEO')
+        );
+
+        if (isVideoAdded) {
+            log("New video detected, checking for duplicates.");
+            // Ignore for youtube shorts
+            if (window.location.href.includes("shorts")) {
+                log("Youtube shorts detected, ignoring...");
+                return;
+            }
+            removeAllDuplicateVideos();
+        }
+    }
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(document.body, { childList: true, subtree: true });
 
     //
     // Update check
