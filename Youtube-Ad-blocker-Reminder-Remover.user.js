@@ -123,7 +123,25 @@
     function removeAds() {
         log("removeAds()");
 
-        setInterval(() => {
+        window.navigation.addEventListener("navigate", (event) => {
+            setTimeout(() =>{
+                playerSwap();
+            }, 1);
+        });
+
+        window.addEventListener("load", function() {
+            setTimeout(() =>{
+                playerSwap();
+            }, 1);
+        });
+
+        window.onfocus = function() {
+            setTimeout(() =>{
+                playerSwap();
+            }, 1);
+        }
+
+        function playerSwap() {
 
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
@@ -239,7 +257,7 @@
             log("Finished");
 
             isVideoPlayerModified = true;
-        }, 500);
+        }
         removePageAds();
     }
     //
