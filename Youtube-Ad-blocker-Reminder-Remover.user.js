@@ -150,9 +150,11 @@
             //
 
             var video = document.querySelector('video');
-            if (video) video.volume = 0;
-            if (video) video.pause();
-            if (video) video.remove();
+            if (video) {
+                video.volume = 0;
+                video.pause();
+                video.remove();
+            }
 
             //
             // Remove the current player
