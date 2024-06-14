@@ -327,17 +327,6 @@
 
         document.head.appendChild(style);
 
-        sponsor?.forEach((element) => {
-             if (element.getAttribute("id") === "rendering-content") {
-                element.childNodes?.forEach((childElement) => {
-                  if (childElement?.data.targetId && childElement?.data.targetId !=="engagement-panel-macro-markers-description-chapters"){
-                      //Skipping the Chapters section
-                        element.style.display = 'none';
-                    }
-                   });
-            }
-         });
-
         log("Removed page ads (✔️)");
     }
 
