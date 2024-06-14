@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Adblock Thing
 // @namespace    http://tampermonkey.net/
-// @version      4.0
+// @version      5.6
 // @description  Removes Adblock Thing
 // @author       JoelMatic
 // @match        https://www.youtube.com/*
@@ -9,7 +9,6 @@
 // @updateURL    https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @downloadURL  https://github.com/TheRealJoelmatic/RemoveAdblockThing/raw/main/Youtube-Ad-blocker-Reminder-Remover.user.js
 // @grant        none
-// @require      https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 // ==/UserScript==
 
 (function()
@@ -29,6 +28,9 @@
 
     // Enable debug messages into the console
     const debugMessages = true;
+
+    // Fix timestamps in the youtube comments for new method
+    const fixTimestamps = true;
 
     // Enable custom modal
     // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
@@ -55,11 +57,8 @@
     // Store the initial URL
     let currentUrl = window.location.href;
 
-    // Used for if there is ad found
-    let isAdFound = false;
-
-    //used to see how meny times we have loopped with a ad active
-    let adLoop = 0;
+    // Used for after the player is updated
+    let isVideoPlayerModified = false;
 
     //
     // Variables used for updater
@@ -77,11 +76,14 @@
     if (adblocker) removeAds();
     if (removePopup) popupRemover();
     if (updateCheck) checkForUpdate();
+    if (fixTimestamps) timestampFix();
 
     // Remove Them pesski popups
     function popupRemover() {
-        const removePopupLoop = () => {
-            requestIdleCallback(removePopupLoop, {timeout: 500});
+
+        const popupRemoverLoop = () => {
+            requestIdleCallback(popupRemoverLoop, {timeout: 500});
+
             const modalOverlay = document.querySelector("tp-yt-iron-overlay-backdrop");
             const popup = document.querySelector(".style-scope ytd-enforcement-message-view-model");
             const popupButton = document.getElementById("dismiss-button");
@@ -116,127 +118,180 @@
             video.play();
 
         }
-        requestIdleCallback(removePopupLoop);
+        requestIdleCallback(popupRemoverLoop);
     }
+
     // undetected adblocker method
-    function removeAds()
-    {
+    // undetected adblocker method
+    function removeAds() {
         log("removeAds()");
 
-        var videoPlayback = 1;
+        const removeAdsLoop = () => {
+            requestIdleCallback(removeAdsLoop, {timeout: 250});
 
-        const removeAdsFunc = () => {
-            requestIdleCallback(removeAdsFunc, {timeout: 50});
-
-            var video = document.querySelector('video');
-            const ad = [...document.querySelectorAll('.ad-showing')][0];
-
-
-            //remove page ads
             if (window.location.href !== currentUrl) {
                 currentUrl = window.location.href;
+                isVideoPlayerModified = false;
+                clearAllPlayers();
                 removePageAds();
             }
 
-            if (ad)
-            {
-                isAdFound = true;
-                adLoop = adLoop + 1;
+            // Fix for youtube shorts
+            if (window.location.href.includes("shorts")) {
+                log("Youtube shorts detected, ignoring...");
+                return;
+            }
 
-                //
-                // ad center method
-                //
+            if (isVideoPlayerModified){
+                removeAllDuplicateVideos();
+                return;
+            }
 
-                // If we tried 10 times we can assume it won't work this time (This stops the weird pause/freeze on the ads)
+            log("Video replacement started!");
 
-                if(adLoop < 10){
-                    const openAdCenterButton = document.querySelector('.ytp-ad-button-icon');
-                    openAdCenterButton?.click();
+            //
+            // remove ad audio
+            //
 
-                    const blockAdButton = document.querySelector('[label="Block ad"]');
-                    blockAdButton?.click();
+            var video = document.querySelector('video');
+            if (video) video.volume = 0;
+            if (video) video.pause();
+            if (video) video.remove();
 
-                    const blockAdButtonConfirm = document.querySelector('.Eddif [label="CONTINUE"] button');
-                    blockAdButtonConfirm?.click();
+            //
+            // Remove the current player
+            //
 
-                    const closeAdCenterButton = document.querySelector('.zBmRhe-Bz112c');
-                    closeAdCenterButton?.click();
-                }
-                else{
-                    if (video) video.play();
-                }
+            if (!clearAllPlayers()) {
+                return;
+            }
 
-              var popupContainer = document.querySelector('body > ytd-app > ytd-popup-container > tp-yt-paper-dialog');
-              if (popupContainer)
-                // popupContainer persists, lets not spam
-                if (popupContainer.style.display == "")
-                  popupContainer.style.display = 'none';
+            /**
+             * remove the "Ad blockers violate YouTube's Terms of Service" screen for safari
+             */
+            let errorScreen = document.querySelector("#error-screen");
+            if (errorScreen) {
+                errorScreen.remove();
+            }
 
-                //
-                // Speed Skip Method
-                //
-                log("Found Ad");
+            //
+            // Get the video ID from the URL
+            //
 
+            let videoID = '';
+            let playList = '';
+            let timeStamp = '';
+            const url = new URL(window.location.href);
+            const urlParams = new URLSearchParams(url.search);
 
-                const skipButtons = ['ytp-ad-skip-button-container', 'ytp-ad-skip-button-modern', '.videoAdUiSkipButton', '.ytp-ad-skip-button', '.ytp-ad-skip-button-modern', '.ytp-ad-skip-button', '.ytp-ad-skip-button-slot' ];
-
-                // Add a little bit of obfuscation when skipping to the end of the video.
-                if (video){
-
-                    video.playbackRate = 10;
-                    video.volume = 0;
-
-                    // Iterate through the array of selectors
-                    skipButtons.forEach(selector => {
-                        // Select all elements matching the current selector
-                        const elements = document.querySelectorAll(selector);
-
-                        // Check if any elements were found
-                        if (elements && elements.length > 0) {
-                          // Iterate through the selected elements and click
-                          elements.forEach(element => {
-                            element?.click();
-                          });
-                        }
-                    });
-                    video.play();
-
-                    let randomNumber = Math.random() * (0.5 - 0.1) + 0.1;
-                    video.currentTime = video.duration + randomNumber || 0;
-                }
-
-                log("skipped Ad (✔️)");
-
+            if (urlParams.has('v')) {
+                videoID = urlParams.get('v');
             } else {
-
-                //check for unreasonale playback speed
-                if(video && video?.playbackRate == 10){
-                    video.playbackRate = videoPlayback;
-                }
-
-                if (isAdFound){
-                    isAdFound = false;
-
-                    // this is right after the ad is skipped
-                    // fixes if you set the speed to 2x and an ad plays, it sets it back to the default 1x
-
-
-                    //somthing bugged out default to 1x then
-                    if (videoPlayback == 10) videoPlayback = 1;
-                    if(video && isFinite(videoPlayback)) video.playbackRate = videoPlayback;
-
-                    //set ad loop back to the defualt
-                    adLoop = 0;
-                }
-                else{
-                    if(video) videoPlayback = video.playbackRate;
+                const pathSegments = url.pathname.split('/');
+                const liveIndex = pathSegments.indexOf('live');
+                if (liveIndex !== -1 && liveIndex + 1 < pathSegments.length) {
+                    videoID = pathSegments[liveIndex + 1];
                 }
             }
 
-        }
-        requestIdleCallback(removeAdsFunc);
+            if (urlParams.has('list')) {
+                playList = "&listType=playlist&list=" + urlParams.get('list');
+            }
 
-        removePageAds();
+            if (urlParams.has('t')) {
+                timeStamp = "&start=" + urlParams.get('t').replace('s', '');
+            }
+
+            if (!videoID) {
+                log("YouTube video URL not found.", "e");
+                return null;
+            }
+
+            log("Video ID: " + videoID);
+
+            //
+            // Create new frame for the video
+            //
+
+            const startOfUrl = "https://www.youtube-nocookie.com/embed/";
+
+            const endOfUrl = "?autoplay=1&modestbranding=1&rel=0";
+            const finalUrl = startOfUrl + videoID + endOfUrl;
+
+
+            const iframe = document.createElement('iframe');
+
+            iframe.setAttribute('src', finalUrl);
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+            iframe.setAttribute('allowfullscreen', true);
+            iframe.setAttribute('mozallowfullscreen', "mozallowfullscreen");
+            iframe.setAttribute('msallowfullscreen', "msallowfullscreen");
+            iframe.setAttribute('oallowfullscreen', "oallowfullscreen");
+            iframe.setAttribute('webkitallowfullscreen', "webkitallowfullscreen");
+
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.position = 'absolute';
+            iframe.style.top = '0';
+            iframe.style.left = '0';
+            iframe.style.zIndex = '9999';
+            iframe.style.pointerEvents = 'all';
+
+            const videoPlayerElement = document.querySelector('.html5-video-player');
+            videoPlayerElement.appendChild(iframe);
+            log("Finished");
+
+            isVideoPlayerModified = true;
+        }
+        requestIdleCallback(removeAdsLoop);
+    }
+    //
+    // logic functionm
+    //
+
+    function removeAllDuplicateVideos() {
+        const videos = document.querySelectorAll('video');
+
+        videos.forEach(video => {
+            if (video.src.includes('www.youtube.com')) {
+                video.muted = true;
+                video.pause();
+                video.addEventListener('volumechange', function() {
+                    if (!video.muted) {
+                        video.muted = true;
+                        video.pause();
+                        log("Video unmuted detected and remuted");
+                    }
+                });
+                video.addEventListener('play', function() {
+                    video.pause();
+                    log("Video play detected and repaused");
+                });
+
+                log("Duplicate video found and muted");
+            }
+        });
+    }
+
+    function clearAllPlayers() {
+
+        const videoPlayerElements = document.querySelectorAll('.html5-video-player');
+
+        if (videoPlayerElements.length === 0) {
+            console.error("No elements with class 'html5-video-player' found.");
+            return false;
+        }
+
+        videoPlayerElements.forEach(videoPlayerElement => {
+        const iframes = videoPlayerElement.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            iframe.remove();
+        });
+    });
+
+        console.log("Removed all current players!");
+        return true;
     }
 
     //removes ads on the page (not video player ads)
@@ -289,6 +344,52 @@
 
         log("Removed page ads (✔️)");
     }
+
+    function changeTimestamp(timestamp) {
+        const videoPlayerElements = document.querySelectorAll('.html5-video-player');
+        videoPlayerElements.forEach(videoPlayerElement => {
+            const iframes = videoPlayerElement.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                if (iframe.src.includes("&start=")) {
+                    iframe.src = iframe.src.replace(/&start=\d+/, "&start=" + timestamp);
+                } else {
+                    iframe.src += "&start=" + timestamp;
+                }
+            });
+        });
+    }
+
+    function timestampFix() {
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('yt-core-attributed-string__link') && target.href.includes('&t=')) {
+                event.preventDefault();
+                const timestamp = target.href.split('&t=')[1].split('s')[0];
+                log(`Timestamp link clicked: ${timestamp} seconds`);
+                changeTimestamp(timestamp);
+            }
+        });
+    }
+
+    function observerCallback(mutations) {
+        let isVideoAdded = mutations.some(mutation =>
+            Array.from(mutation.addedNodes).some(node => node.tagName === 'VIDEO')
+        );
+
+        if (isVideoAdded) {
+            log("New video detected, checking for duplicates.");
+            // Ignore for youtube shorts
+            if (window.location.href.includes("shorts")) {
+                log("Youtube shorts detected, ignoring...");
+                return;
+            }
+            removeAllDuplicateVideos();
+        }
+    }
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(document.body, { childList: true, subtree: true });
 
     //
     // Update check
@@ -390,32 +491,26 @@
     }
 
     // Used for debug messages
-    function log(log, level = 'l', ...args) {
-        if (!debugMessages) return;
+    function log(log, level, ...args) {
 
-        const prefix = 'Remove Adblock Thing:'
+        if(!debugMessages)
+            return;
+
+        const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
         switch (level) {
-            case 'e':
-            case 'err':
             case 'error':
-                console.error(message, ...args);
+                console.error(`❌ ${message}`, ...args);
                 break;
-            case 'l':
             case 'log':
-                console.log(message, ...args);
+                console.log(`✅ ${message}`, ...args);
                 break;
-            case 'w':
-            case 'warn':
             case 'warning':
-                console.warn(message, ...args);
+                console.warn(`⚠️ ${message}`, ...args);
                 break;
-            case 'i':
-            case 'info':
             default:
-        console.info(message, ...args);
-        break
-    }
+                console.info(`ℹ️ ${message}`, ...args);
+        }
     }
 
 })();
