@@ -32,6 +32,9 @@
     // Fix timestamps in the youtube comments for new method
     const fixTimestamps = true;
 
+    // Fix The blocker element in the youtube playback
+    const curtainBlockerFix = true;
+
     // Enable custom modal
     // Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the update version modal.
     // When set to false, the default window popup will be used. And the library will not be loaded.
@@ -77,6 +80,7 @@
     if (removePopup) popupRemover();
     if (updateCheck) checkForUpdate();
     if (fixTimestamps) timestampFix();
+    if (curtainBlockerFix) curtainBlockerRemove();
 
     // Remove Them pesski popups
     function popupRemover() {
@@ -366,6 +370,18 @@
                 changeTimestamp(timestamp);
             }
         });
+    }
+
+    function curtainBlockerRemove() {
+        setInterval(() => {
+          const element = document.querySelector(
+            "ytd-watch-flexy[player-unavailable] #player-container-outer.ytd-watch-flexy"
+          );
+    
+          if (element) {
+            element.removeAttribute("player-unavailable");
+          }
+        }, 1000);
     }
 
     function observerCallback(mutations) {
