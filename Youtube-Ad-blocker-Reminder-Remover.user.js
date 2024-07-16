@@ -375,7 +375,7 @@
     function curtainBlockerRemove() {
         setInterval(() => {
           const element = document.querySelector(
-            "ytd-watch-flexy[player-unavailable] #player-container-outer.ytd-watch-flexy"
+            "ytd-watch-flexy[player-unavailable]"
           );
     
           if (element) {
