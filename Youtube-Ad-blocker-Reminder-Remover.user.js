@@ -330,6 +330,15 @@
         }
     }
 
+    // Function to remove page ads
+    function removePageAds() {
+        const sponsor = document.querySelectorAll("div#player-ads.style-scope.ytd-watch-flexy, div#panels.style-scope.ytd-watch-flexy");
+        sponsor.forEach(s => s.remove());
+    }
 
+    // Call setupMutationObserver when page loads
+    window.addEventListener('load', function() {
+        setupMutationObserver();
+    });
 
 })();
