@@ -191,7 +191,7 @@
             }
 
             if (urlParams.has('list')) {
-                playList = "&listType=playlist&list=" + urlParams.get('list');
+                playList = "&list=" + urlParams.get('list') + "&index=" + urlParams.get('index');
             }
 
             if (urlParams.has('t')) {
@@ -208,12 +208,17 @@
             //
             // Create new frame for the video
             //
+            let finalUrl = '';
 
-            const startOfUrl = "https://www.youtube-nocookie.com/embed/";
-          
-            const endOfUrl = "?autoplay=1&modestbranding=1&rel=0";
-            const finalUrl = startOfUrl + videoID + endOfUrl;
-
+            if (playList !== '') {
+                const startOfUrl = "https://www.youtube-nocookie.com/embed/?v=";
+                const endOfUrl = "&autoplay=1&modestbranding=1&rel=0";
+                finalUrl = startOfUrl + videoID + playList + endOfUrl;
+            } else {
+                const startOfUrl = "https://www.youtube-nocookie.com/embed/";
+                const endOfUrl = "?autoplay=1&modestbranding=1&rel=0";
+                finalUrl = startOfUrl + videoID + endOfUrl;
+            }
 
             const iframe = document.createElement('iframe');
 
@@ -236,6 +241,10 @@
 
             const videoPlayerElement = document.querySelector('.html5-video-player');
             videoPlayerElement.appendChild(iframe);
+            if (playList !== '') {
+                // Remove misleading playlist component
+                setTimeout(() => {document.getElementById('playlist').remove()}, 500);
+            }
             log("Finished");
 
             isVideoPlayerModified = true;
